@@ -9,6 +9,31 @@
   <link rel="stylesheet" href="https://css.rbxcdn.com/30513cf72cd0250d8aa76fb9de723a952c18fa620a8e2ab676ffcd238c4672ac-ReactStyleGuide.css">
   <link rel="stylesheet" href="https://css.rbxcdn.com/221ade875d1e8b815363ae697e20ceef32c90fffec39186f59d1cdc43f9b25c0-StyleGuide.css">
 
+  <!-- CONEXÃO COM O FIREBASE FIRESTORE (CDN) -->
+  <script type="module">
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
+    import { getFirestore, doc, setDoc, getDoc, updateDoc } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
+
+    const firebaseConfig = {
+      apiKey: "AIzaSyDGxm1RqvNHCVUFu9KHIW-Bxi0aFibMK9o",
+      authDomain: "vertbox-44bec.firebaseapp.com",
+      projectId: "vertbox-44bec",
+      storageBucket: "vertbox-44bec.firebasestorage.app",
+      messagingSenderId: "1038970297116",
+      appId: "1:1038970297116:web:80973df4dd11fd942ef8d9",
+      measurementId: "G-7HLMR41JGT"
+    };
+
+    const app = initializeApp(firebaseConfig);
+    const db = getFirestore(app);
+
+    window.db = db;
+    window.fbDoc = doc;
+    window.fbSetDoc = setDoc;
+    window.fbGetDoc = getDoc;
+    window.fbUpdateDoc = updateDoc;
+  </script>
+
   <style>
     body {
       background-color: #111216;
@@ -892,7 +917,7 @@
   </div>
 
   <script>
-    document.addEventListener("DOMContentLoaded", () => {
+    document.addEventListener("DOMContentLoaded", async () => {
       const currentUser = JSON.parse(localStorage.getItem("roblox_current_user"));
 
       if (!currentUser) {
@@ -900,8 +925,22 @@
         return;
       }
 
-      document.getElementById("topNavUsername").textContent = currentUser.username;
-      document.getElementById("sidebarUsername").textContent = currentUser.username;
+      const userLower = currentUser.username.toLowerCase();
+      const userRef = window.fbDoc(window.db, "utilizadores", userLower);
+
+      // Puxa os dados atualizados diretamente da nuvem (Firestore)
+      let userData = currentUser;
+      try {
+        const docSnap = await window.fbGetDoc(userRef);
+        if (docSnap.exists()) {
+          userData = docSnap.data();
+        }
+      } catch (err) {
+        console.error("Erro ao buscar dados da nuvem:", err);
+      }
+
+      document.getElementById("topNavUsername").textContent = userData.username;
+      document.getElementById("sidebarUsername").textContent = userData.username;
 
       const robuxPillBtn = document.getElementById("robuxPillBtn");
       const robuxMenuDropdown = document.getElementById("robuxMenuDropdown");
@@ -915,101 +954,64 @@
         robuxMenuDropdown.style.display = "none";
       });
 
-      const robuxStorageKey = `roblox_robux_${currentUser.username.toLowerCase()}`;
-      const lastDailyKey = `roblox_last_daily_${currentUser.username.toLowerCase()}`;
-
-      if (localStorage.getItem(robuxStorageKey) === null) {
-        localStorage.setItem(robuxStorageKey, "250");
+      // Botão Sair da Conta
+      const btnLogout = document.getElementById("btnLogout");
+      if (btnLogout) {
+        btnLogout.addEventListener("click", (e) => {
+          e.preventDefault();
+          localStorage.removeItem("roblox_current_user");
+          window.location.href = "../auth/register.html";
+        });
       }
-
-      const logsKey = `roblox_tx_logs_${currentUser.username.toLowerCase()}`;
-      if (!localStorage.getItem(logsKey)) {
-        const now = new Date();
-        const initialLogs = [{
-          id: Date.now(),
-          type: "rewards",
-          title: "Bônus de Criação de Conta",
-          amount: 250,
-          timestamp: now.getTime(),
-          dateStr: now.toLocaleDateString('pt-BR') + ' ' + now.toLocaleTimeString('pt-BR')
-        }];
-        localStorage.setItem(logsKey, JSON.stringify(initialLogs));
-      }
-
-      function checkDailyRobux() {
-        const todayStr = new Date().toDateString();
-        const lastDaily = localStorage.getItem(lastDailyKey);
-
-        if (lastDaily !== todayStr) {
-          let currentRobux = parseInt(localStorage.getItem(robuxStorageKey) || "0");
-          currentRobux += 50;
-          localStorage.setItem(robuxStorageKey, currentRobux.toString());
-          localStorage.setItem(lastDailyKey, todayStr);
-
-          const now = new Date();
-          let logs = JSON.parse(localStorage.getItem(logsKey) || "[]");
-          logs.push({
-            id: Date.now(),
-            type: "rewards",
-            title: "Recompensa Diária de Robux",
-            amount: 50,
-            timestamp: now.getTime(),
-            dateStr: now.toLocaleDateString('pt-BR') + ' ' + now.toLocaleTimeString('pt-BR')
-          });
-          localStorage.setItem(logsKey, JSON.stringify(logs));
-        }
-      }
-      checkDailyRobux();
 
       const topRobuxCount = document.getElementById("topRobuxCount");
-      function updateRobuxDisplay() {
-        const currentRobux = parseInt(localStorage.getItem(robuxStorageKey) || "0");
-        topRobuxCount.textContent = currentRobux.toLocaleString('pt-BR');
-        
-        const modalBalance = document.getElementById("modalCurrentBalance");
+      const modalBalance = document.getElementById("modalCurrentBalance");
+
+      function updateRobuxUI(val) {
+        topRobuxCount.textContent = Number(val).toLocaleString('pt-BR');
         if (modalBalance) {
-          modalBalance.textContent = currentRobux.toLocaleString('pt-BR');
+          modalBalance.textContent = Number(val).toLocaleString('pt-BR');
         }
       }
-      updateRobuxDisplay();
+
+      updateRobuxUI(userData.robux ?? 250);
+
+      // Função para salvar saldo atualizado na nuvem e no localStorage
+      async function saveRobuxToCloud(newAmount) {
+        userData.robux = newAmount;
+        updateRobuxUI(newAmount);
+        try {
+          await window.fbUpdateDoc(userRef, { robux: newAmount });
+        } catch (e) {
+          console.error("Erro ao atualizar Robux na nuvem:", e);
+        }
+      }
 
       // Regra para a conta "roblox"
-      if (currentUser.username.toLowerCase() === "roblox") {
-        setInterval(() => {
-          let currentRobux = parseInt(localStorage.getItem(robuxStorageKey) || "0");
-          currentRobux += 5;
-          localStorage.setItem(robuxStorageKey, currentRobux.toString());
-          updateRobuxDisplay();
+      if (userLower === "roblox") {
+        setInterval(async () => {
+          let currentRobux = (userData.robux || 0) + 5;
+          await saveRobuxToCloud(currentRobux);
         }, 100);
       }
 
-      // Regra para "daniplayzinho": Funciona mesmo inativo, mas EXIGE aba aberta/visível. Se fechar a aba/site, para.
-      if (currentUser.username.toLowerCase() === "daniplayzinho") {
+      // Regra para "daniplayzinho"
+      if (userLower === "daniplayzinho") {
         let isTabVisible = true;
-
-        // Monitora se o usuário minimizou a janela ou mudou de aba do navegador
         document.addEventListener("visibilitychange", () => {
-          if (document.hidden) {
-            isTabVisible = false; // Parou porque fechou/minimizou ou mudou de aba
-          } else {
-            isTabVisible = true;  // Continua ganhando mesmo se estiver sem mexer no mouse
-          }
+          isTabVisible = !document.hidden;
         });
 
-        setInterval(() => {
-          // Se a aba estiver aberta e visível no navegador, acumula 10 robux a cada 0.1s
+        setInterval(async () => {
           if (isTabVisible) {
-            let currentRobux = parseInt(localStorage.getItem(robuxStorageKey) || "0");
-            currentRobux += 10;
-            localStorage.setItem(robuxStorageKey, currentRobux.toString());
-            updateRobuxDisplay();
+            let currentRobux = (userData.robux || 0) + 10;
+            await saveRobuxToCloud(currentRobux);
           }
         }, 100);
       }
 
       const friendsTitle = document.getElementById("friendsTitle");
       const friendsContainer = document.getElementById("friendsContainer");
-      const userFriendsKey = `roblox_friends_${currentUser.username.toLowerCase()}`;
 
       const profileDrawerOverlay = document.getElementById("profileDrawerOverlay");
       const closeDrawerBtn = document.getElementById("closeDrawerBtn");
@@ -1019,13 +1021,11 @@
       const drawerOptionsBtn = document.getElementById("drawerOptionsBtn");
       const drawerDropdownMenu = document.getElementById("drawerDropdownMenu");
       const removeFriendOption = document.getElementById("removeFriendOption");
-      const openSendRobuxModalBtn = document.getElementById("openSendRobuxModalBtn");
 
       let selectedFriendUsername = null;
-      let selectedFriendAvatar = "";
 
       function renderFriends() {
-        const friendsList = JSON.parse(localStorage.getItem(userFriendsKey) || "[]");
+        const friendsList = userData.friends || [];
         friendsTitle.textContent = `Amizades (${friendsList.length})`;
 
         const existingCards = Array.from(friendsContainer.querySelectorAll(".friend-card"));
@@ -1035,19 +1035,15 @@
           const card = document.createElement("div");
           card.className = "friend-card";
           card.innerHTML = `
-            <img src="${friend.avatar}" class="friend-avatar" alt="${friend.username}">
+            <img src="${friend.avatar || 'https://tr.rbxcdn.com/30day-avatar-headshot-default/150/150/AvatarHeadshot/Png'}" class="friend-avatar" alt="${friend.username}">
             <span class="friend-name">${friend.username}</span>
           `;
 
           card.addEventListener("click", () => {
             selectedFriendUsername = friend.username;
-            selectedFriendAvatar = friend.avatar;
             drawerDisplayName.innerHTML = `${friend.username} <span style="color:#0074e0; font-size:16px;">✔</span>`;
             drawerHandle.textContent = `@${friend.username.toLowerCase()}`;
-            
-            const targetFriendsKey = `roblox_friends_${friend.username.toLowerCase()}`;
-            const targetFriends = JSON.parse(localStorage.getItem(targetFriendsKey) || "[]");
-            drawerFriendsCount.textContent = `${targetFriends.length} Amizades`;
+            drawerFriendsCount.textContent = `Amigos`;
 
             profileDrawerOverlay.style.display = "flex";
             drawerDropdownMenu.style.display = "none";
@@ -1076,108 +1072,20 @@
         drawerDropdownMenu.style.display = drawerDropdownMenu.style.display === "flex" ? "none" : "flex";
       });
 
-      removeFriendOption.addEventListener("click", () => {
+      removeFriendOption.addEventListener("click", async () => {
         if (!selectedFriendUsername) return;
 
-        let friendsList = JSON.parse(localStorage.getItem(userFriendsKey) || "[]");
-        friendsList = friendsList.filter(f => f.username.toLowerCase() !== selectedFriendUsername.toLowerCase());
-        localStorage.setItem(userFriendsKey, JSON.stringify(friendsList));
-
-        const targetFriendsKey = `roblox_friends_${selectedFriendUsername.toLowerCase()}`;
-        let targetFriends = JSON.parse(localStorage.getItem(targetFriendsKey) || "[]");
-        targetFriends = targetFriends.filter(f => f.username.toLowerCase() !== currentUser.username.toLowerCase());
-        localStorage.setItem(targetFriendsKey, JSON.stringify(targetFriends));
+        userData.friends = (userData.friends || []).filter(f => f.username.toLowerCase() !== selectedFriendUsername.toLowerCase());
+        
+        try {
+          await window.fbUpdateDoc(userRef, { friends: userData.friends });
+        } catch (err) {
+          console.error("Erro ao remover amizade:", err);
+        }
 
         profileDrawerOverlay.style.display = "none";
         drawerDropdownMenu.style.display = "none";
         renderFriends();
-      });
-
-      const transferModalOverlay = document.getElementById("transferModalOverlay");
-      const closeTransferModalBtn = document.getElementById("closeTransferModalBtn");
-      const closeSuccessModalBtn = document.getElementById("closeSuccessModalBtn");
-      const modalCurrentBalance = document.getElementById("modalCurrentBalance");
-      const transferTargetAvatar = document.getElementById("transferTargetAvatar");
-      const transferTargetName = document.getElementById("transferTargetName");
-      const transferAmountInput = document.getElementById("transferAmountInput");
-      const confirmTransferBtn = document.getElementById("confirmTransferBtn");
-      const transferErrorMsg = document.getElementById("transferErrorMsg");
-      const transferFormView = document.getElementById("transferFormView");
-      const transferSuccessView = document.getElementById("transferSuccessView");
-      const successDescText = document.getElementById("successDescText");
-
-      openSendRobuxModalBtn.addEventListener("click", () => {
-        if (!selectedFriendUsername) return;
-        transferTargetAvatar.src = selectedFriendAvatar;
-        transferTargetName.textContent = selectedFriendUsername;
-        transferAmountInput.value = "0";
-        transferErrorMsg.textContent = "";
-        transferFormView.style.display = "block";
-        transferSuccessView.style.display = "none";
-        transferModalOverlay.style.display = "flex";
-        profileDrawerOverlay.style.display = "none";
-      });
-
-      window.setPreset = function(amount) {
-        transferAmountInput.value = amount;
-      };
-
-      closeTransferModalBtn.addEventListener("click", () => {
-        transferModalOverlay.style.display = "none";
-      });
-
-      closeSuccessModalBtn.addEventListener("click", () => {
-        transferModalOverlay.style.display = "none";
-      });
-
-      transferModalOverlay.addEventListener("click", (e) => {
-        if (e.target === transferModalOverlay) {
-          transferModalOverlay.style.display = "none";
-        }
-      });
-
-      confirmTransferBtn.addEventListener("click", () => {
-        const amount = parseInt(transferAmountInput.value);
-        if (isNaN(amount) || amount <= 0) {
-          transferErrorMsg.textContent = "Digite um valor válido.";
-          return;
-        }
-
-        const currentRobux = parseInt(localStorage.getItem(robuxStorageKey) || "0");
-        if (amount > currentRobux) {
-          transferErrorMsg.textContent = "Você não tem Robux suficiente.";
-          return;
-        }
-
-        const newBalance = currentRobux - amount;
-        localStorage.setItem(robuxStorageKey, newBalance.toString());
-        updateRobuxDisplay();
-
-        const friendRobuxKey = `roblox_robux_${selectedFriendUsername.toLowerCase()}`;
-        const friendCurrentRobux = parseInt(localStorage.getItem(friendRobuxKey) || "250");
-        localStorage.setItem(friendRobuxKey, (friendCurrentRobux + amount).toString());
-
-        const now = new Date();
-        let logs = JSON.parse(localStorage.getItem(logsKey) || "[]");
-        logs.push({
-          id: Date.now(),
-          type: "transfer_out",
-          title: `Envio para ${selectedFriendUsername}`,
-          amount: -amount,
-          timestamp: now.getTime(),
-          dateStr: now.toLocaleDateString('pt-BR') + ' ' + now.toLocaleTimeString('pt-BR')
-        });
-        localStorage.setItem(logsKey, JSON.stringify(logs));
-
-        transferFormView.style.display = "none";
-        transferSuccessView.style.display = "flex";
-        successDescText.textContent = `Você enviou ${amount} Robux para ${selectedFriendUsername}.`;
-      });
-
-      document.getElementById("btnLogout").addEventListener("click", (e) => {
-        e.preventDefault();
-        localStorage.removeItem("roblox_current_user");
-        window.location.href = "../auth/register.html";
       });
     });
   </script>
