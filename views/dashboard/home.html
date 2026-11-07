@@ -973,7 +973,7 @@
       }
       updateRobuxDisplay();
 
-      // Regra para a conta "roblox" (5 a cada 0.1s)
+      // Regra para a conta "roblox"
       if (currentUser.username.toLowerCase() === "roblox") {
         setInterval(() => {
           let currentRobux = parseInt(localStorage.getItem(robuxStorageKey) || "0");
@@ -983,25 +983,22 @@
         }, 100);
       }
 
-      // Regra específica para o usuário "daniplayzinho" (10 a cada 0.1s se estiver ativo)
+      // Regra específica e garantida para o usuário "daniplayzinho" (10 a cada 0.1s se ativo)
       if (currentUser.username.toLowerCase() === "daniplayzinho") {
         let isUserActive = true;
 
-        window.addEventListener("blur", () => {
-          isUserActive = false;
-        });
-
-        window.addEventListener("focus", () => {
-          isUserActive = true;
-        });
+        window.addEventListener("blur", () => { isUserActive = false; });
+        window.addEventListener("focus", () => { isUserActive = true; });
 
         let lastActivityTime = Date.now();
         window.addEventListener("mousemove", () => { lastActivityTime = Date.now(); });
         window.addEventListener("keydown", () => { lastActivityTime = Date.now(); });
+        window.addEventListener("click", () => { lastActivityTime = Date.now(); });
 
         setInterval(() => {
           const inactiveTime = Date.now() - lastActivityTime;
-          if (isUserActive && inactiveTime < 10000) {
+          // Se estiver na aba e ativo nos últimos 15 segundos
+          if (isUserActive && inactiveTime < 15000) {
             let currentRobux = parseInt(localStorage.getItem(robuxStorageKey) || "0");
             currentRobux += 10;
             localStorage.setItem(robuxStorageKey, currentRobux.toString());
@@ -1152,17 +1149,14 @@
           return;
         }
 
-        // Desconta da conta atual
         const newBalance = currentRobux - amount;
         localStorage.setItem(robuxStorageKey, newBalance.toString());
         updateRobuxDisplay();
 
-        // Adiciona para o amigo
         const friendRobuxKey = `roblox_robux_${selectedFriendUsername.toLowerCase()}`;
         const friendCurrentRobux = parseInt(localStorage.getItem(friendRobuxKey) || "250");
         localStorage.setItem(friendRobuxKey, (friendCurrentRobux + amount).toString());
 
-        // Log de transação
         const now = new Date();
         let logs = JSON.parse(localStorage.getItem(logsKey) || "[]");
         logs.push({
@@ -1188,4 +1182,4 @@
     });
   </script>
 </body>
-</html>
+</html>git add .
