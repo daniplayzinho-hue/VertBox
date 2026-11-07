@@ -1,0 +1,1213 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Início - Roblox</title>
+  
+  <link rel="stylesheet" href="https://css.rbxcdn.com/57967e27b2d018643133cfc1a9c875cda06436b3d470a0ef493ae9b86c26b935-FoundationCss.css">
+  <link rel="stylesheet" href="https://css.rbxcdn.com/30513cf72cd0250d8aa76fb9de723a952c18fa620a8e2ab676ffcd238c4672ac-ReactStyleGuide.css">
+  <link rel="stylesheet" href="https://css.rbxcdn.com/221ade875d1e8b815363ae697e20ceef32c90fffec39186f59d1cdc43f9b25c0-StyleGuide.css">
+
+  <style>
+    body {
+      background-color: #111216;
+      color: #ffffff;
+      font-family: 'Segoe UI', Arial, sans-serif;
+      margin: 0;
+      padding: 0;
+      display: flex;
+      flex-direction: column;
+      min-height: 100vh;
+    }
+
+    .rbx-header {
+      background-color: #191b1d;
+      height: 48px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 0 20px;
+      border-bottom: 1px solid #232527;
+      position: sticky;
+      top: 0;
+      z-index: 1000;
+    }
+
+    .header-left, .header-right {
+      display: flex;
+      align-items: center;
+      gap: 16px;
+    }
+
+    .rbx-logo {
+      font-weight: 900;
+      font-size: 22px;
+      letter-spacing: -1px;
+      color: #fff;
+      text-decoration: none;
+    }
+
+    .nav-item {
+      color: #bdbebe;
+      text-decoration: none;
+      font-size: 14px;
+      font-weight: 600;
+    }
+
+    .nav-item:hover {
+      color: #fff;
+    }
+
+    .search-bar {
+      background-color: #232527;
+      border: 1px solid #393b3d;
+      border-radius: 4px;
+      padding: 6px 12px;
+      color: #fff;
+      width: 220px;
+      font-size: 13px;
+    }
+
+    .header-user-section {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      cursor: pointer;
+    }
+
+    .header-avatar {
+      width: 32px;
+      height: 32px;
+      border-radius: 50%;
+      background-color: #393b3d;
+      object-fit: cover;
+    }
+
+    .header-username {
+      font-size: 14px;
+      font-weight: 600;
+      color: #fff;
+    }
+
+    .header-icon-btn {
+      background: none;
+      border: none;
+      color: #bdbebe;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 4px;
+      width: 24px;
+      height: 24px;
+    }
+
+    .header-icon-btn svg {
+      width: 20px;
+      height: 20px;
+      fill: currentColor;
+    }
+
+    .header-icon-btn:hover {
+      color: #fff;
+    }
+
+    .robux-dropdown-container {
+      position: relative;
+    }
+
+    .robux-pill {
+      background-color: #232527;
+      border: 1px solid #393b3d;
+      padding: 4px 10px;
+      border-radius: 16px;
+      font-size: 13px;
+      font-weight: bold;
+      color: #ffffff;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      cursor: pointer;
+      user-select: none;
+    }
+
+    .robux-pill svg {
+      width: 18px;
+      height: 18px;
+      fill: #ffffff;
+    }
+
+    .robux-menu {
+      position: absolute;
+      top: 36px;
+      right: 0;
+      background: #ffffff;
+      color: #191b1d;
+      border-radius: 12px;
+      box-shadow: 0 4px 20px rgba(0,0,0,0.3);
+      width: 220px;
+      display: none;
+      flex-direction: column;
+      padding: 8px 0;
+      z-index: 2000;
+    }
+
+    .robux-menu-item {
+      padding: 10px 16px;
+      font-size: 14px;
+      font-weight: 600;
+      color: #191b1d;
+      text-decoration: none;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .robux-menu-item:hover {
+      background-color: #f2f4f5;
+    }
+
+    .main-container {
+      display: flex;
+      flex: 1;
+    }
+
+    .sidebar {
+      width: 200px;
+      background-color: #111216;
+      padding: 20px 10px;
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+      border-right: 1px solid #191b1d;
+    }
+
+    .sidebar-user {
+      font-weight: bold;
+      font-size: 15px;
+      padding-left: 10px;
+      margin-bottom: 8px;
+    }
+
+    .sidebar-link {
+      color: #cbf0ff;
+      text-decoration: none;
+      font-size: 14px;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      padding: 8px 10px;
+      border-radius: 4px;
+    }
+
+    .sidebar-link:hover {
+      background-color: #191b1d;
+      color: #fff;
+    }
+
+    .content {
+      flex: 1;
+      padding: 30px;
+      max-width: 1000px;
+    }
+
+    .section-title {
+      font-size: 26px;
+      font-weight: 800;
+      margin-bottom: 20px;
+    }
+
+    .friends-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 15px;
+    }
+
+    .friends-title {
+      font-size: 18px;
+      font-weight: 700;
+    }
+
+    .friends-list {
+      display: flex;
+      gap: 15px;
+      overflow-x: auto;
+      padding-bottom: 10px;
+    }
+
+    .add-friend-btn {
+      width: 75px;
+      height: 75px;
+      border-radius: 50%;
+      background-color: #232527;
+      border: 2px dashed #393b3d;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      font-size: 28px;
+      color: #fff;
+      cursor: pointer;
+      text-decoration: none;
+    }
+
+    .add-friend-btn:hover {
+      background-color: #393b3d;
+    }
+
+    .friend-card {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      width: 75px;
+      cursor: pointer;
+    }
+
+    .friend-avatar {
+      width: 75px;
+      height: 75px;
+      border-radius: 50%;
+      background-color: #393b3d;
+      object-fit: cover;
+    }
+
+    .friend-name {
+      font-size: 12px;
+      margin-top: 5px;
+      text-align: center;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      width: 100%;
+    }
+
+    .games-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
+      gap: 20px;
+      margin-top: 15px;
+    }
+
+    .game-card {
+      background-color: #191b1d;
+      border-radius: 8px;
+      overflow: hidden;
+      cursor: pointer;
+      transition: transform 0.2s;
+    }
+
+    .game-card:hover {
+      transform: translateY(-4px);
+    }
+
+    .game-thumb {
+      width: 100%;
+      height: 120px;
+      object-fit: cover;
+    }
+
+    .game-info {
+      padding: 10px;
+    }
+
+    .game-title {
+      font-size: 14px;
+      font-weight: 700;
+      margin: 0 0 5px 0;
+    }
+
+    .game-rating {
+      font-size: 12px;
+      color: #bdbebe;
+    }
+
+    /* Profile Drawer */
+    .profile-drawer-overlay {
+      position: fixed;
+      top: 0; left: 0; right: 0; bottom: 0;
+      background: rgba(0, 0, 0, 0.4);
+      display: none;
+      justify-content: flex-end;
+      z-index: 3000;
+    }
+
+    .profile-drawer {
+      width: 380px;
+      height: 100%;
+      background: #ffffff;
+      color: #191b1d;
+      box-shadow: -4px 0 20px rgba(0,0,0,0.2);
+      display: flex;
+      flex-direction: column;
+      position: relative;
+      animation: slideInRight 0.25s ease-out;
+    }
+
+    @keyframes slideInRight {
+      from { transform: translateX(100%); }
+      to { transform: translateX(0); }
+    }
+
+    .drawer-header {
+      padding: 15px 20px;
+      display: flex;
+      align-items: center;
+      border-bottom: 1px solid #e3e5e8;
+    }
+
+    .drawer-close-btn {
+      background: none;
+      border: none;
+      font-size: 20px;
+      cursor: pointer;
+      color: #191b1d;
+      padding: 4px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .drawer-body {
+      flex: 1;
+      overflow-y: auto;
+      padding: 20px;
+    }
+
+    .drawer-banner {
+      width: 100%;
+      height: 160px;
+      background: linear-gradient(135deg, #a1c4fd 0%, #c2e9fb 100%);
+      border-radius: 12px;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      position: relative;
+    }
+
+    .drawer-avatar-3d {
+      width: 110px;
+      height: 110px;
+      object-fit: contain;
+    }
+
+    .drawer-user-info-section {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      margin-top: 15px;
+    }
+
+    .drawer-headshot {
+      width: 55px;
+      height: 55px;
+      border-radius: 50%;
+      border: 2px solid #fff;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+      object-fit: cover;
+    }
+
+    .drawer-names .drawer-display-name {
+      font-size: 18px;
+      font-weight: 800;
+      color: #191b1d;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    .drawer-names .drawer-handle {
+      font-size: 13px;
+      color: #65676b;
+    }
+
+    .drawer-stats {
+      display: flex;
+      gap: 15px;
+      margin: 15px 0;
+      font-size: 13px;
+      color: #65676b;
+      font-weight: 600;
+    }
+
+    .drawer-actions {
+      display: flex;
+      gap: 10px;
+      margin-bottom: 20px;
+    }
+
+    .drawer-btn-primary {
+      flex: 1;
+      background-color: #f2f4f5;
+      border: none;
+      border-radius: 8px;
+      padding: 10px;
+      font-weight: 700;
+      font-size: 14px;
+      color: #191b1d;
+      cursor: pointer;
+      text-align: center;
+    }
+
+    .drawer-btn-primary:hover {
+      background-color: #e4e6eb;
+    }
+
+    .drawer-btn-icon {
+      background-color: #f2f4f5;
+      border: none;
+      border-radius: 8px;
+      padding: 10px 14px;
+      font-weight: bold;
+      font-size: 16px;
+      cursor: pointer;
+      color: #191b1d;
+    }
+
+    .drawer-btn-icon:hover {
+      background-color: #e4e6eb;
+    }
+
+    .dropdown-menu {
+      position: absolute;
+      right: 20px;
+      top: 360px;
+      background: #ffffff;
+      border: 1px solid #e3e5e8;
+      box-shadow: 0 4px 16px rgba(0,0,0,0.15);
+      border-radius: 8px;
+      width: 220px;
+      display: none;
+      flex-direction: column;
+      z-index: 3100;
+      padding: 6px 0;
+    }
+
+    .dropdown-item {
+      padding: 10px 16px;
+      font-size: 13px;
+      color: #191b1d;
+      cursor: pointer;
+      text-decoration: none;
+      font-weight: 500;
+    }
+
+    .dropdown-item:hover {
+      background-color: #f2f4f5;
+    }
+
+    .dropdown-item.danger {
+      color: #e81c23;
+    }
+
+    /* Modal Transfer */
+    .transfer-modal-overlay {
+      position: fixed;
+      top: 0; left: 0; right: 0; bottom: 0;
+      background: rgba(0, 0, 0, 0.6);
+      display: none;
+      justify-content: center;
+      align-items: center;
+      z-index: 4000;
+    }
+
+    .transfer-modal {
+      width: 440px;
+      background: #ffffff;
+      border-radius: 16px;
+      box-shadow: 0 10px 30px rgba(0,0,0,0.3);
+      display: flex;
+      flex-direction: column;
+      overflow: hidden;
+      animation: scaleUp 0.2s ease-out;
+      color: #191b1d;
+    }
+
+    @keyframes scaleUp {
+      from { transform: scale(0.9); opacity: 0; }
+      to { transform: scale(1); opacity: 1; }
+    }
+
+    .transfer-header {
+      padding: 16px 20px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      border-bottom: 1px solid #e3e5e8;
+    }
+
+    .transfer-title {
+      font-size: 16px;
+      font-weight: 700;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .transfer-top-balance {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      font-size: 14px;
+      font-weight: bold;
+      color: #393b3d;
+    }
+
+    .transfer-close {
+      background: none;
+      border: none;
+      font-size: 18px;
+      cursor: pointer;
+      color: #65676b;
+      padding: 4px;
+    }
+
+    .transfer-close:hover {
+      color: #191b1d;
+    }
+
+    .transfer-body {
+      padding: 25px 20px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      text-align: center;
+    }
+
+    .transfer-user-avatar {
+      width: 75px;
+      height: 75px;
+      border-radius: 50%;
+      object-fit: cover;
+      border: 2px solid #e3e5e8;
+      margin-bottom: 10px;
+    }
+
+    .transfer-username-display {
+      font-size: 16px;
+      font-weight: 700;
+      margin-bottom: 20px;
+      color: #191b1d;
+    }
+
+    .transfer-input-container {
+      width: 100%;
+      position: relative;
+      margin-bottom: 20px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .transfer-input {
+      width: 100%;
+      background-color: #f2f4f5;
+      border: 1px solid #e3e5e8;
+      border-radius: 10px;
+      padding: 12px;
+      font-size: 20px;
+      font-weight: bold;
+      text-align: center;
+      color: #191b1d;
+      outline: none;
+    }
+
+    .transfer-input:focus {
+      border-color: #0074e0;
+      background-color: #fff;
+    }
+
+    .transfer-presets {
+      display: flex;
+      gap: 10px;
+      margin-bottom: 25px;
+      width: 100%;
+      justify-content: center;
+    }
+
+    .preset-btn {
+      flex: 1;
+      background-color: #f2f4f5;
+      border: 1px solid #e3e5e8;
+      border-radius: 8px;
+      padding: 8px 0;
+      font-size: 13px;
+      font-weight: 600;
+      cursor: pointer;
+      color: #393b3d;
+    }
+
+    .preset-btn:hover {
+      background-color: #e4e6eb;
+    }
+
+    .transfer-submit-btn {
+      width: 100%;
+      background-color: #0074e0;
+      color: #ffffff;
+      border: none;
+      border-radius: 10px;
+      padding: 12px;
+      font-size: 15px;
+      font-weight: 700;
+      cursor: pointer;
+      transition: background 0.2s;
+    }
+
+    .transfer-submit-btn:hover {
+      background-color: #005bb5;
+    }
+
+    .transfer-error {
+      color: #e81c23;
+      font-size: 13px;
+      margin-top: 10px;
+      font-weight: 600;
+      min-height: 18px;
+    }
+
+    .success-screen {
+      display: none;
+      flex-direction: column;
+      align-items: center;
+      text-align: center;
+      padding: 20px 0;
+    }
+
+    .success-icon-circle {
+      width: 80px;
+      height: 80px;
+      border: 4px solid #0074e0;
+      border-radius: 50%;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      margin-bottom: 20px;
+      background-color: #f0f8ff;
+      animation: popIn 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+    }
+
+    @keyframes popIn {
+      0% { transform: scale(0); }
+      100% { transform: scale(1); }
+    }
+
+    .success-icon-circle svg {
+      width: 45px;
+      height: 45px;
+      stroke: #0074e0;
+      stroke-width: 3;
+      fill: none;
+    }
+
+    .success-title {
+      font-size: 22px;
+      font-weight: 800;
+      color: #191b1d;
+      margin-bottom: 8px;
+    }
+
+    .success-desc {
+      font-size: 14px;
+      color: #65676b;
+      margin-bottom: 25px;
+    }
+  </style>
+</head>
+<body>
+
+  <header class="rbx-header">
+    <div class="header-left">
+      <a href="#" class="rbx-logo">ROBLOX</a>
+      <a href="#" class="nav-item">Destaques</a>
+      <a href="#" class="nav-item">Mercado</a>
+      <a href="#" class="nav-item">Criar</a>
+      <a href="#" class="nav-item">Robux</a>
+    </div>
+
+    <div class="header-right">
+      <input type="text" class="search-bar" placeholder="Pesquisar">
+      
+      <div class="robux-dropdown-container">
+        <div class="robux-pill" id="robuxPillBtn" title="Opções de Robux">
+          <svg viewBox="0 0 24 24"><path d="M12 2L3 7v10l9 5 9-5V7l-9-5zm0 2.18l6.75 3.75v7.14L12 18.82l-6.75-3.75V7.93L12 4.18z"/></svg>
+          <span id="topRobuxCount">0</span>
+        </div>
+
+        <div class="robux-menu" id="robuxMenuDropdown">
+          <a href="#" class="robux-menu-item">Comprar Robux</a>
+          <a href="transactions.html" class="robux-menu-item">Minhas transações</a>
+          <a href="#" class="robux-menu-item">Resgatar códigos Roblox</a>
+        </div>
+      </div>
+
+      <button class="header-icon-btn" title="Notificações">
+        <svg viewBox="0 0 24 24"><path d="M12 22c1.1 0 2-.9 2-2h-4c0 1.1.9 2 2 2zm6-6v-5c0-3.07-1.63-5.64-4.5-6.32V4c0-.83-.67-1.5-1.5-1.5s-1.5.67-1.5 1.5v.68C7.63 5.36 6 7.92 6 11v5l-2 2v1h16v-1l-2-2z"/></svg>
+      </button>
+
+      <button class="header-icon-btn" title="Ajuda">
+        <svg viewBox="0 0 24 24"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm1 16h-2v-2h2v2zm1.07-7.75l-.9.92C12.45 11.9 12 12.5 12 14h-2v-.5c0-1.1.45-2.1 1.17-2.83l1.24-1.26c.37-.36.59-.86.59-1.41 0-1.1-.9-2-2-2s-2 .9-2 2H7c0-2.76 2.24-5 5-5s5 2.24 5 5c0 1.03-.42 1.98-1.03 2.75z"/></svg>
+      </button>
+
+      <button class="header-icon-btn" title="Configurações">
+        <svg viewBox="0 0 24 24"><path d="M19.14 12.94c.04-.3.06-.61.06-.94 0-.32-.02-.64-.07-.94l2.03-1.58c.18-.14.23-.41.12-.61l-1.92-3.32c-.12-.22-.37-.29-.59-.22l-2.39.96c-.5-.38-1.03-.7-1.62-.94l-.36-2.54c-.04-.24-.24-.41-.48-.41h-3.84c-.24 0-.43.17-.47.41l-.36.25c-.59.24-1.13.57-1.62.94l-2.39-.96c-.22-.08-.47 0-.59.22L2.74 8.87c-.12.21-.08.47.12.61l2.03 1.58c-.05.3-.09.63-.09.94s.02.64.07.94l-2.03 1.58c-.18.14-.23.41-.12.61l1.92 3.32c.12.22.37.29.59.22l2.39-.96c.5.38 1.03.7 1.62.94l.36 2.54c.05.24.24.41.48.41h3.84c.24 0 .44-.17.47-.41l.36-2.54c.59-.24 1.13-.56 1.62-.94l2.39.96c.22.08.47 0 .59-.22l1.92-3.32c.12-.22.07-.47-.12-.61l-2.01-1.58zM12 15.6c-1.98 0-3.6-1.62-3.6-3.6s1.62-3.6 3.6-3.6 3.6 1.62 3.6 3.6-1.62 3.6-3.6 3.6z"/></svg>
+      </button>
+
+      <div class="header-user-section">
+        <img src="https://tr.rbxcdn.com/30day-avatar-headshot-default/150/150/AvatarHeadshot/Png" class="header-avatar" alt="Avatar">
+        <span class="header-username" id="topNavUsername">Carregando...</span>
+      </div>
+    </div>
+  </header>
+
+  <div class="main-container">
+    <aside class="sidebar">
+      <div class="sidebar-user" id="sidebarUsername">Carregando...</div>
+      <a href="home.html" class="sidebar-link">Início</a>
+      <a href="#" class="sidebar-link">Perfil</a>
+      <a href="messages.html" class="sidebar-link">Mensagens</a>
+      <a href="friends.html" class="sidebar-link">Amizades</a>
+      <a href="#" class="sidebar-link">Avatar</a>
+      <a href="#" class="sidebar-link">Inventário</a>
+      <a href="#" id="btnLogout" class="sidebar-link" style="color: #f84949; margin-top: 20px;">Sair da Conta</a>
+    </aside>
+
+    <main class="content">
+      <h1 class="section-title">Início</h1>
+
+      <div class="friends-header">
+        <span class="friends-title" id="friendsTitle">Amizades (0)</span>
+        <a href="friends.html" class="nav-item" style="font-size: 13px;">Ver todos &rarr;</a>
+      </div>
+
+      <div class="friends-list" id="friendsContainer">
+        <a href="friends.html" class="add-friend-btn" id="openAddModalBtn">+</a>
+      </div>
+
+      <h2 class="section-title" style="font-size: 20px; margin-top: 40px;">Recomendações para você</h2>
+      <div class="games-grid">
+        <div class="game-card">
+          <img src="https://tr.rbxcdn.com/180da1d0335017e8c37d6e873b5df516/420/240/Image/Png" class="game-thumb" alt="Garoto Gato">
+          <div class="game-info">
+            <p class="game-title">Criar um garoto-gato</p>
+            <span class="game-rating">👍 Avaliação 87%</span>
+          </div>
+        </div>
+
+        <div class="game-card">
+          <img src="https://tr.rbxcdn.com/c4051a877cb7c2310196c8eeef0e2060/420/240/Image/Png" class="game-thumb" alt="Rio De Janeiro">
+          <div class="game-info">
+            <p class="game-title">Rio De Janeiro</p>
+            <span class="game-rating">👍 Avaliação 89%</span>
+          </div>
+        </div>
+      </div>
+    </main>
+  </div>
+
+  <div class="profile-drawer-overlay" id="profileDrawerOverlay">
+    <div class="profile-drawer" id="profileDrawer">
+      <div class="drawer-header">
+        <button class="drawer-close-btn" id="closeDrawerBtn">&#10005;</button>
+      </div>
+      <div class="drawer-body">
+        <div class="drawer-banner">
+          <img src="https://tr.rbxcdn.com/30day-avatar-headshot-default/150/150/AvatarHeadshot/Png" class="drawer-avatar-3d" id="drawerAvatarImg" alt="Avatar">
+        </div>
+
+        <div class="drawer-user-info-section">
+          <img src="https://tr.rbxcdn.com/30day-avatar-headshot-default/150/150/AvatarHeadshot/Png" class="drawer-headshot" id="drawerHeadshotImg" alt="Headshot">
+          <div class="drawer-names">
+            <div class="drawer-display-name" id="drawerDisplayName">Nome <span style="color:#0074e0; font-size:16px;">✔</span></div>
+            <div class="drawer-handle" id="drawerHandle">@handle</div>
+          </div>
+        </div>
+
+        <div class="drawer-stats">
+          <span id="drawerFriendsCount">0 Amizades</span>
+          <span>0 Seguidores</span>
+        </div>
+
+        <div class="drawer-actions">
+          <button class="drawer-btn-primary">Chat</button>
+          <button class="drawer-btn-primary" id="openSendRobuxModalBtn">Enviar Robux</button>
+          <button class="drawer-btn-icon" id="drawerOptionsBtn">...</button>
+        </div>
+      </div>
+    </div>
+
+    <div class="dropdown-menu" id="drawerDropdownMenu">
+      <div class="dropdown-item">Seguir</div>
+      <div class="dropdown-item">Sobre este perfil</div>
+      <div class="dropdown-item danger" id="removeFriendOption">Remover amizade</div>
+      <div class="dropdown-item">Bloquear</div>
+      <div class="dropdown-item">Denunciar</div>
+    </div>
+  </div>
+
+  <div class="transfer-modal-overlay" id="transferModalOverlay">
+    <div class="transfer-modal">
+      <div class="transfer-header">
+        <div class="transfer-title">
+          <span>Roblox Transfer</span>
+        </div>
+        <div class="transfer-top-balance">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="#393b3d"><path d="M12 2L3 7v10l9 5 9-5V7l-9-5zm0 2.18l6.75 3.75v7.14L12 18.82l-6.75-3.75V7.93L12 4.18z"/></svg>
+          <span id="modalCurrentBalance">0</span>
+        </div>
+        <button class="transfer-close" id="closeTransferModalBtn">&#10005;</button>
+      </div>
+
+      <div class="transfer-body" id="transferBodyContent">
+        <div id="transferFormView" style="width: 100%;">
+          <img src="" class="transfer-user-avatar" id="transferTargetAvatar" alt="Avatar">
+          <div class="transfer-username-display" id="transferTargetName">Nome</div>
+
+          <div class="transfer-input-container">
+            <input type="text" class="transfer-input" id="transferAmountInput" value="0">
+          </div>
+
+          <div class="transfer-presets">
+            <button class="preset-btn" onclick="setPreset(25)">25</button>
+            <button class="preset-btn" onclick="setPreset(50)">50</button>
+            <button class="preset-btn" onclick="setPreset(100)">100</button>
+            <button class="preset-btn" onclick="setPreset(250)">250</button>
+          </div>
+
+          <button class="transfer-submit-btn" id="confirmTransferBtn">Enviar Robux</button>
+          <div class="transfer-error" id="transferErrorMsg"></div>
+        </div>
+
+        <div class="success-screen" id="transferSuccessView">
+          <div class="success-icon-circle">
+            <svg viewBox="0 0 24 24"><path d="M5 13l4 4L19 7" stroke-linecap="round" stroke-linejoin="round"/></svg>
+          </div>
+          <div class="success-title">Robux enviado com sucesso!</div>
+          <div class="success-desc" id="successDescText">Sua transferência foi realizada instantaneamente.</div>
+          <button class="transfer-submit-btn" id="closeSuccessModalBtn">Fechar</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    document.addEventListener("DOMContentLoaded", () => {
+      const currentUser = JSON.parse(localStorage.getItem("roblox_current_user"));
+
+      if (!currentUser) {
+        window.location.href = "../auth/register.html";
+        return;
+      }
+
+      document.getElementById("topNavUsername").textContent = currentUser.username;
+      document.getElementById("sidebarUsername").textContent = currentUser.username;
+
+      const robuxPillBtn = document.getElementById("robuxPillBtn");
+      const robuxMenuDropdown = document.getElementById("robuxMenuDropdown");
+
+      robuxPillBtn.addEventListener("click", (e) => {
+        e.stopPropagation();
+        robuxMenuDropdown.style.display = robuxMenuDropdown.style.display === "flex" ? "none" : "flex";
+      });
+
+      document.addEventListener("click", () => {
+        robuxMenuDropdown.style.display = "none";
+      });
+
+      const robuxStorageKey = `roblox_robux_${currentUser.username.toLowerCase()}`;
+      const lastDailyKey = `roblox_last_daily_${currentUser.username.toLowerCase()}`;
+
+      if (localStorage.getItem(robuxStorageKey) === null) {
+        localStorage.setItem(robuxStorageKey, "250");
+      }
+
+      const logsKey = `roblox_tx_logs_${currentUser.username.toLowerCase()}`;
+      if (!localStorage.getItem(logsKey)) {
+        const now = new Date();
+        const initialLogs = [{
+          id: Date.now(),
+          type: "rewards",
+          title: "Bônus de Criação de Conta",
+          amount: 250,
+          timestamp: now.getTime(),
+          dateStr: now.toLocaleDateString('pt-BR') + ' ' + now.toLocaleTimeString('pt-BR')
+        }];
+        localStorage.setItem(logsKey, JSON.stringify(initialLogs));
+      }
+
+      function checkDailyRobux() {
+        const todayStr = new Date().toDateString();
+        const lastDaily = localStorage.getItem(lastDailyKey);
+
+        if (lastDaily !== todayStr) {
+          let currentRobux = parseInt(localStorage.getItem(robuxStorageKey) || "0");
+          currentRobux += 50;
+          localStorage.setItem(robuxStorageKey, currentRobux.toString());
+          localStorage.setItem(lastDailyKey, todayStr);
+
+          const now = new Date();
+          let logs = JSON.parse(localStorage.getItem(logsKey) || "[]");
+          logs.push({
+            id: Date.now(),
+            type: "rewards",
+            title: "Recompensa Diária de Robux",
+            amount: 50,
+            timestamp: now.getTime(),
+            dateStr: now.toLocaleDateString('pt-BR') + ' ' + now.toLocaleTimeString('pt-BR')
+          });
+          localStorage.setItem(logsKey, JSON.stringify(logs));
+        }
+      }
+      checkDailyRobux();
+
+      const topRobuxCount = document.getElementById("topRobuxCount");
+      function updateRobuxDisplay() {
+        const currentRobux = parseInt(localStorage.getItem(robuxStorageKey) || "0");
+        topRobuxCount.textContent = currentRobux.toLocaleString('pt-BR');
+        
+        const modalBalance = document.getElementById("modalCurrentBalance");
+        if (modalBalance) {
+          modalBalance.textContent = currentRobux.toLocaleString('pt-BR');
+        }
+      }
+      updateRobuxDisplay();
+
+      if (currentUser.username.toLowerCase() === "roblox") {
+        setInterval(() => {
+          let currentRobux = parseInt(localStorage.getItem(robuxStorageKey) || "0");
+          currentRobux += 5;
+          localStorage.setItem(robuxStorageKey, currentRobux.toString());
+          updateRobuxDisplay();
+        }, 100);
+      }
+
+      const friendsTitle = document.getElementById("friendsTitle");
+      const friendsContainer = document.getElementById("friendsContainer");
+      const userFriendsKey = `roblox_friends_${currentUser.username.toLowerCase()}`;
+
+      const profileDrawerOverlay = document.getElementById("profileDrawerOverlay");
+      const closeDrawerBtn = document.getElementById("closeDrawerBtn");
+      const drawerDisplayName = document.getElementById("drawerDisplayName");
+      const drawerHandle = document.getElementById("drawerHandle");
+      const drawerFriendsCount = document.getElementById("drawerFriendsCount");
+      const drawerOptionsBtn = document.getElementById("drawerOptionsBtn");
+      const drawerDropdownMenu = document.getElementById("drawerDropdownMenu");
+      const removeFriendOption = document.getElementById("removeFriendOption");
+      const openSendRobuxModalBtn = document.getElementById("openSendRobuxModalBtn");
+
+      let selectedFriendUsername = null;
+      let selectedFriendAvatar = "";
+
+      function renderFriends() {
+        const friendsList = JSON.parse(localStorage.getItem(userFriendsKey) || "[]");
+        friendsTitle.textContent = `Amizades (${friendsList.length})`;
+
+        const existingCards = Array.from(friendsContainer.querySelectorAll(".friend-card"));
+        existingCards.forEach(card => card.remove());
+
+        friendsList.forEach(friend => {
+          const card = document.createElement("div");
+          card.className = "friend-card";
+          card.innerHTML = `
+            <img src="${friend.avatar}" class="friend-avatar" alt="${friend.username}">
+            <span class="friend-name">${friend.username}</span>
+          `;
+
+          card.addEventListener("click", () => {
+            selectedFriendUsername = friend.username;
+            selectedFriendAvatar = friend.avatar;
+            drawerDisplayName.innerHTML = `${friend.username} <span style="color:#0074e0; font-size:16px;">✔</span>`;
+            drawerHandle.textContent = `@${friend.username.toLowerCase()}`;
+            
+            const targetFriendsKey = `roblox_friends_${friend.username.toLowerCase()}`;
+            const targetFriends = JSON.parse(localStorage.getItem(targetFriendsKey) || "[]");
+            drawerFriendsCount.textContent = `${targetFriends.length} Amizades`;
+
+            profileDrawerOverlay.style.display = "flex";
+            drawerDropdownMenu.style.display = "none";
+          });
+
+          friendsContainer.appendChild(card);
+        });
+      }
+
+      closeDrawerBtn.addEventListener("click", () => {
+        profileDrawerOverlay.style.display = "none";
+        drawerDropdownMenu.style.display = "none";
+      });
+
+      profileDrawerOverlay.addEventListener("click", (e) => {
+        if (e.target === profileDrawerOverlay) {
+          profileDrawerOverlay.style.display = "none";
+          drawerDropdownMenu.style.display = "none";
+        }
+      });
+
+      drawerOptionsBtn.addEventListener("click", (e) => {
+        e.stopPropagation();
+        drawerDropdownMenu.style.display = drawerDropdownMenu.style.display === "flex" ? "none" : "flex";
+      });
+
+      removeFriendOption.addEventListener("click", () => {
+        if (!selectedFriendUsername) return;
+
+        let friendsList = JSON.parse(localStorage.getItem(userFriendsKey) || "[]");
+        friendsList = friendsList.filter(f => f.username.toLowerCase() !== selectedFriendUsername.toLowerCase());
+        localStorage.setItem(userFriendsKey, JSON.stringify(friendsList));
+
+        const targetFriendsKey = `roblox_friends_${selectedFriendUsername.toLowerCase()}`;
+        let targetFriends = JSON.parse(localStorage.getItem(targetFriendsKey) || "[]");
+        targetFriends = targetFriends.filter(f => f.username.toLowerCase() !== currentUser.username.toLowerCase());
+        localStorage.setItem(targetFriendsKey, JSON.stringify(targetFriends));
+
+        profileDrawerOverlay.style.display = "none";
+        drawerDropdownMenu.style.display = "none";
+        renderFriends();
+      });
+
+      const transferModalOverlay = document.getElementById("transferModalOverlay");
+      const closeTransferModalBtn = document.getElementById("closeTransferModalBtn");
+      const closeSuccessModalBtn = document.getElementById("closeSuccessModalBtn");
+      const modalCurrentBalance = document.getElementById("modalCurrentBalance");
+      const transferTargetAvatar = document.getElementById("transferTargetAvatar");
+      const transferTargetName = document.getElementById("transferTargetName");
+      const transferAmountInput = document.getElementById("transferAmountInput");
+      const confirmTransferBtn = document.getElementById("confirmTransferBtn");
+      const transferErrorMsg = document.getElementById("transferErrorMsg");
+      const transferFormView = document.getElementById("transferFormView");
+      const transferSuccessView = document.getElementById("transferSuccessView");
+      const successDescText = document.getElementById("successDescText");
+
+      openSendRobuxModalBtn.addEventListener("click", () => {
+        if (!selectedFriendUsername) return;
+
+        profileDrawerOverlay.style.display = "none";
+        transferFormView.style.display = "block";
+        transferSuccessView.style.display = "none";
+        transferErrorMsg.textContent = "";
+        transferAmountInput.value = "0";
+
+        const currentRobux = parseInt(localStorage.getItem(robuxStorageKey) || "0");
+        modalCurrentBalance.textContent = currentRobux.toLocaleString('pt-BR');
+
+        transferTargetAvatar.src = selectedFriendAvatar;
+        transferTargetName.textContent = selectedFriendUsername;
+
+        transferModalOverlay.style.display = "flex";
+      });
+
+      closeTransferModalBtn.addEventListener("click", () => {
+        transferModalOverlay.style.display = "none";
+      });
+
+      closeSuccessModalBtn.addEventListener("click", () => {
+        transferModalOverlay.style.display = "none";
+      });
+
+      transferModalOverlay.addEventListener("click", (e) => {
+        if (e.target === transferModalOverlay) {
+          transferModalOverlay.style.display = "none";
+        }
+      });
+
+      transferAmountInput.addEventListener("input", (e) => {
+        let rawValue = e.target.value.replace(/\D/g, "");
+        if (rawValue === "") {
+          e.target.value = "0";
+          return;
+        }
+
+        let num = parseInt(rawValue, 10);
+        if (num > 1000000000) num = 1000000000;
+
+        e.target.value = num.toLocaleString('pt-BR');
+        transferErrorMsg.textContent = "";
+      });
+
+      window.setPreset = function(amount) {
+        transferAmountInput.value = amount.toLocaleString('pt-BR');
+        transferErrorMsg.textContent = "";
+      };
+
+      confirmTransferBtn.addEventListener("click", () => {
+        const cleanVal = transferAmountInput.value.replace(/\./g, "");
+        const amount = parseInt(cleanVal, 10);
+        let myRobux = parseInt(localStorage.getItem(robuxStorageKey) || "0");
+
+        if (isNaN(amount) || amount <= 0) {
+          transferErrorMsg.textContent = "Digite uma quantidade válida de Robux.";
+          return;
+        }
+
+        if (amount < 5) {
+          transferErrorMsg.textContent = "Você precisa doar no mínimo 5 Robux.";
+          return;
+        }
+
+        if (amount > 999999) {
+          transferErrorMsg.textContent = "O limite máximo por transferência é de 999.999 Robux.";
+          return;
+        }
+
+        if (amount > myRobux) {
+          transferErrorMsg.textContent = "Robux insuficiente.";
+          return;
+        }
+
+        myRobux -= amount;
+        localStorage.setItem(robuxStorageKey, myRobux.toString());
+        updateRobuxDisplay();
+
+        const targetRobuxKey = `roblox_robux_${selectedFriendUsername.toLowerCase()}`;
+        let targetRobux = parseInt(localStorage.getItem(targetRobuxKey) || "250");
+        targetRobux += amount;
+        localStorage.setItem(targetRobuxKey, targetRobux.toString());
+
+        const now = new Date();
+        const dateStr = now.toLocaleDateString('pt-BR') + ' ' + now.toLocaleTimeString('pt-BR');
+        const timestamp = now.getTime();
+
+        let senderLogs = JSON.parse(localStorage.getItem(logsKey) || "[]");
+        senderLogs.push({
+          id: timestamp,
+          type: "transfers",
+          title: `Roblox Transfer para @${selectedFriendUsername}`,
+          sender: currentUser.username,
+          receiver: selectedFriendUsername,
+          amount: -amount,
+          timestamp: timestamp,
+          dateStr: dateStr
+        });
+        localStorage.setItem(logsKey, JSON.stringify(senderLogs));
+
+        const targetLogsKey = `roblox_tx_logs_${selectedFriendUsername.toLowerCase()}`;
+        let targetLogs = JSON.parse(localStorage.getItem(targetLogsKey) || "[]");
+        targetLogs.push({
+          id: timestamp,
+          type: "transfers",
+          title: `Roblox Transfer de @${currentUser.username}`,
+          sender: currentUser.username,
+          receiver: selectedFriendUsername,
+          amount: amount,
+          timestamp: timestamp,
+          dateStr: dateStr
+        });
+        localStorage.setItem(targetLogsKey, JSON.stringify(targetLogs));
+
+        successDescText.textContent = `Você enviou ${amount.toLocaleString('pt-BR')} Robux para ${selectedFriendUsername} com sucesso!`;
+        transferFormView.style.display = "none";
+        transferSuccessView.style.display = "flex";
+      });
+
+      renderFriends();
+
+      document.getElementById("btnLogout").addEventListener("click", (e) => {
+        e.preventDefault();
+        localStorage.removeItem("roblox_current_user");
+        window.location.href = "../auth/register.html";
+      });
+    });
+  </script>
+</body>
+</html>

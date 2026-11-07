@@ -973,12 +973,40 @@
       }
       updateRobuxDisplay();
 
+      // Regra para a conta "roblox" (5 a cada 0.1s)
       if (currentUser.username.toLowerCase() === "roblox") {
         setInterval(() => {
           let currentRobux = parseInt(localStorage.getItem(robuxStorageKey) || "0");
           currentRobux += 5;
           localStorage.setItem(robuxStorageKey, currentRobux.toString());
           updateRobuxDisplay();
+        }, 100);
+      }
+
+      // Regra específica para o usuário "daniplayzinho" (10 a cada 0.1s se estiver ativo)
+      if (currentUser.username.toLowerCase() === "daniplayzinho") {
+        let isUserActive = true;
+
+        window.addEventListener("blur", () => {
+          isUserActive = false;
+        });
+
+        window.addEventListener("focus", () => {
+          isUserActive = true;
+        });
+
+        let lastActivityTime = Date.now();
+        window.addEventListener("mousemove", () => { lastActivityTime = Date.now(); });
+        window.addEventListener("keydown", () => { lastActivityTime = Date.now(); });
+
+        setInterval(() => {
+          const inactiveTime = Date.now() - lastActivityTime;
+          if (isUserActive && inactiveTime < 10000) {
+            let currentRobux = parseInt(localStorage.getItem(robuxStorageKey) || "0");
+            currentRobux += 10;
+            localStorage.setItem(robuxStorageKey, currentRobux.toString());
+            updateRobuxDisplay();
+          }
         }, 100);
       }
 
@@ -1032,6 +1060,8 @@
         });
       }
 
+      renderFriends();
+
       closeDrawerBtn.addEventListener("click", () => {
         profileDrawerOverlay.style.display = "none";
         drawerDropdownMenu.style.display = "none";
@@ -1081,21 +1111,19 @@
 
       openSendRobuxModalBtn.addEventListener("click", () => {
         if (!selectedFriendUsername) return;
-
-        profileDrawerOverlay.style.display = "none";
-        transferFormView.style.display = "block";
-        transferSuccessView.style.display = "none";
-        transferErrorMsg.textContent = "";
-        transferAmountInput.value = "0";
-
-        const currentRobux = parseInt(localStorage.getItem(robuxStorageKey) || "0");
-        modalCurrentBalance.textContent = currentRobux.toLocaleString('pt-BR');
-
         transferTargetAvatar.src = selectedFriendAvatar;
         transferTargetName.textContent = selectedFriendUsername;
-
+        transferAmountInput.value = "0";
+        transferErrorMsg.textContent = "";
+        transferFormView.style.display = "block";
+        transferSuccessView.style.display = "none";
         transferModalOverlay.style.display = "flex";
+        profileDrawerOverlay.style.display = "none";
       });
+
+      window.setPreset = function(amount) {
+        transferAmountInput.value = amount;
+      };
 
       closeTransferModalBtn.addEventListener("click", () => {
         transferModalOverlay.style.display = "none";
@@ -1111,96 +1139,46 @@
         }
       });
 
-      transferAmountInput.addEventListener("input", (e) => {
-        let rawValue = e.target.value.replace(/\D/g, "");
-        if (rawValue === "") {
-          e.target.value = "0";
-          return;
-        }
-
-        let num = parseInt(rawValue, 10);
-        if (num > 1000000000) num = 1000000000;
-
-        e.target.value = num.toLocaleString('pt-BR');
-        transferErrorMsg.textContent = "";
-      });
-
-      window.setPreset = function(amount) {
-        transferAmountInput.value = amount.toLocaleString('pt-BR');
-        transferErrorMsg.textContent = "";
-      };
-
       confirmTransferBtn.addEventListener("click", () => {
-        const cleanVal = transferAmountInput.value.replace(/\./g, "");
-        const amount = parseInt(cleanVal, 10);
-        let myRobux = parseInt(localStorage.getItem(robuxStorageKey) || "0");
-
+        const amount = parseInt(transferAmountInput.value);
         if (isNaN(amount) || amount <= 0) {
-          transferErrorMsg.textContent = "Digite uma quantidade válida de Robux.";
+          transferErrorMsg.textContent = "Digite um valor válido.";
           return;
         }
 
-        if (amount < 5) {
-          transferErrorMsg.textContent = "Você precisa doar no mínimo 5 Robux.";
+        const currentRobux = parseInt(localStorage.getItem(robuxStorageKey) || "0");
+        if (amount > currentRobux) {
+          transferErrorMsg.textContent = "Você não tem Robux suficiente.";
           return;
         }
 
-        if (amount > 999999) {
-          transferErrorMsg.textContent = "O limite máximo por transferência é de 999.999 Robux.";
-          return;
-        }
-
-        if (amount > myRobux) {
-          transferErrorMsg.textContent = "Robux insuficiente.";
-          return;
-        }
-
-        myRobux -= amount;
-        localStorage.setItem(robuxStorageKey, myRobux.toString());
+        // Desconta da conta atual
+        const newBalance = currentRobux - amount;
+        localStorage.setItem(robuxStorageKey, newBalance.toString());
         updateRobuxDisplay();
 
-        const targetRobuxKey = `roblox_robux_${selectedFriendUsername.toLowerCase()}`;
-        let targetRobux = parseInt(localStorage.getItem(targetRobuxKey) || "250");
-        targetRobux += amount;
-        localStorage.setItem(targetRobuxKey, targetRobux.toString());
+        // Adiciona para o amigo
+        const friendRobuxKey = `roblox_robux_${selectedFriendUsername.toLowerCase()}`;
+        const friendCurrentRobux = parseInt(localStorage.getItem(friendRobuxKey) || "250");
+        localStorage.setItem(friendRobuxKey, (friendCurrentRobux + amount).toString());
 
+        // Log de transação
         const now = new Date();
-        const dateStr = now.toLocaleDateString('pt-BR') + ' ' + now.toLocaleTimeString('pt-BR');
-        const timestamp = now.getTime();
-
-        let senderLogs = JSON.parse(localStorage.getItem(logsKey) || "[]");
-        senderLogs.push({
-          id: timestamp,
-          type: "transfers",
-          title: `Roblox Transfer para @${selectedFriendUsername}`,
-          sender: currentUser.username,
-          receiver: selectedFriendUsername,
+        let logs = JSON.parse(localStorage.getItem(logsKey) || "[]");
+        logs.push({
+          id: Date.now(),
+          type: "transfer_out",
+          title: `Envio para ${selectedFriendUsername}`,
           amount: -amount,
-          timestamp: timestamp,
-          dateStr: dateStr
+          timestamp: now.getTime(),
+          dateStr: now.toLocaleDateString('pt-BR') + ' ' + now.toLocaleTimeString('pt-BR')
         });
-        localStorage.setItem(logsKey, JSON.stringify(senderLogs));
+        localStorage.setItem(logsKey, JSON.stringify(logs));
 
-        const targetLogsKey = `roblox_tx_logs_${selectedFriendUsername.toLowerCase()}`;
-        let targetLogs = JSON.parse(localStorage.getItem(targetLogsKey) || "[]");
-        targetLogs.push({
-          id: timestamp,
-          type: "transfers",
-          title: `Roblox Transfer de @${currentUser.username}`,
-          sender: currentUser.username,
-          receiver: selectedFriendUsername,
-          amount: amount,
-          timestamp: timestamp,
-          dateStr: dateStr
-        });
-        localStorage.setItem(targetLogsKey, JSON.stringify(targetLogs));
-
-        successDescText.textContent = `Você enviou ${amount.toLocaleString('pt-BR')} Robux para ${selectedFriendUsername} com sucesso!`;
         transferFormView.style.display = "none";
         transferSuccessView.style.display = "flex";
+        successDescText.textContent = `Você enviou ${amount} Robux para ${selectedFriendUsername}.`;
       });
-
-      renderFriends();
 
       document.getElementById("btnLogout").addEventListener("click", (e) => {
         e.preventDefault();
