@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Entrar - Roblox</title>
+  <link rel="stylesheet" href="../../css/pages/register.css">
+</head>
+<body>
+  <div class="register-card">
+    <h2>ENTRAR NA CONTA</h2>
+
+    <form id="loginForm">
+      <!-- Nome de Usuário -->
+      <label for="loginUsername">Nome de usuário</label>
+      <input type="text" id="loginUsername" placeholder="Digite seu usuário" required>
+
+      <!-- Senha -->
+      <label for="loginPassword">Senha</label>
+      <input type="password" id="loginPassword" placeholder="Digite sua senha" required>
+      <span id="loginError" class="error-msg"></span>
+
+      <button type="submit" id="btnLogin">Entrar</button>
+    </form>
+
+    <p style="text-align: center; margin-top: 15px; font-size: 13px;">
+      Não tem uma conta? <a href="register.html" style="color: #00a2ff; text-decoration: none;">Cadastre-se</a>
+    </p>
+  </div>
+
+  <script src="../../js/login.js"></script>
+</body>
+</html>

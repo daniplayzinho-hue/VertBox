@@ -1,0 +1,584 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Adicionar Amizades - Roblox</title>
+
+  <style>
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+    }
+
+    body {
+      background-color: #ffffff;
+      color: #191b1d;
+      display: flex;
+      height: 100vh;
+      overflow: hidden;
+    }
+
+    /* Menu Lateral Esquerdo */
+    .sidebar-mini {
+      width: 70px;
+      background-color: #ffffff;
+      border-right: 1px solid #e3e5e8;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      padding-top: 15px;
+      gap: 24px;
+      z-index: 10;
+    }
+
+    .sidebar-mini-item {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 4px;
+      color: #393b3d;
+      text-decoration: none;
+      font-size: 11px;
+      font-weight: 500;
+      cursor: pointer;
+    }
+
+    .sidebar-mini-item svg {
+      width: 22px;
+      height: 22px;
+      fill: currentColor;
+    }
+
+    .sidebar-mini-item:hover {
+      color: #000;
+    }
+
+    .roblox-bottom-logo {
+      margin-top: auto;
+      margin-bottom: 20px;
+      font-weight: 900;
+      font-size: 20px;
+    }
+
+    /* Estrutura Principal */
+    .main-wrapper {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      overflow-y: auto;
+      background-color: #ffffff;
+    }
+
+    /* Top Header com Barra de Pesquisa */
+    .top-header {
+      background-color: #ffffff;
+      padding: 12px 20px;
+      display: flex;
+      align-items: center;
+      gap: 15px;
+      border-bottom: 1px solid #e3e5e8;
+    }
+
+    .btn-back {
+      background: none;
+      border: none;
+      font-size: 22px;
+      cursor: pointer;
+      color: #191b1d;
+      padding: 5px;
+    }
+
+    .search-box-container {
+      flex: 1;
+      max-width: 550px;
+      margin: 0 auto;
+      position: relative;
+      display: flex;
+      align-items: center;
+    }
+
+    .search-box-container input {
+      width: 100%;
+      background-color: #f2f4f5;
+      border: 1px solid #e3e5e8;
+      border-radius: 8px;
+      padding: 8px 12px 8px 36px;
+      font-size: 14px;
+      outline: none;
+    }
+
+    .search-box-container input:focus {
+      border-color: #bdbebe;
+      background-color: #ffffff;
+    }
+
+    .search-icon {
+      position: absolute;
+      left: 10px;
+      width: 16px;
+      height: 16px;
+      fill: #65676b;
+    }
+
+    /* Abas */
+    .tabs-bar {
+      background-color: #ffffff;
+      display: flex;
+      justify-content: flex-start;
+      padding-left: 40px;
+      border-bottom: 1px solid #e3e5e8;
+    }
+
+    .tab-btn {
+      padding: 12px 25px;
+      font-size: 15px;
+      font-weight: 600;
+      color: #65676b;
+      border: none;
+      background: none;
+      cursor: pointer;
+      border-bottom: 2px solid transparent;
+    }
+
+    .tab-btn.active {
+      color: #191b1d;
+      border-bottom: 2px solid #191b1d;
+    }
+
+    /* Conteúdo */
+    .content-area {
+      padding: 30px 40px;
+      max-width: 1200px;
+      margin: 0 auto;
+      width: 100%;
+    }
+
+    /* Bloco QR Code */
+    .qr-container {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      margin-bottom: 35px;
+    }
+
+    .qr-box {
+      width: 75px;
+      height: 75px;
+      background-color: #f2f4f5;
+      border-radius: 12px;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      border: 1px solid #e3e5e8;
+    }
+
+    .qr-box svg {
+      width: 32px;
+      height: 32px;
+      fill: #393b3d;
+    }
+
+    .qr-text {
+      font-size: 13px;
+      color: #65676b;
+      margin-top: 8px;
+      font-weight: 500;
+    }
+
+    .section-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 20px;
+    }
+
+    .section-title {
+      font-size: 18px;
+      font-weight: 700;
+      color: #191b1d;
+    }
+
+    .requests-list {
+      display: flex;
+      flex-direction: column;
+      gap: 15px;
+    }
+
+    .request-row {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 8px 0;
+      border-bottom: 1px solid #f2f4f5;
+    }
+
+    .request-user-info {
+      display: flex;
+      align-items: center;
+      gap: 15px;
+    }
+
+    .user-avatar-img {
+      width: 50px;
+      height: 50px;
+      border-radius: 50%;
+      background-color: #e3e5e8;
+      object-fit: cover;
+    }
+
+    .user-details .name {
+      font-size: 15px;
+      font-weight: 700;
+      color: #191b1d;
+    }
+
+    .user-details .handle {
+      font-size: 13px;
+      color: #65676b;
+    }
+
+    .user-details .subtext {
+      font-size: 12px;
+      color: #8c9094;
+      margin-top: 2px;
+    }
+
+    .request-actions {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .btn-action {
+      background-color: #e4e6eb;
+      color: #050505;
+      border: none;
+      border-radius: 6px;
+      padding: 6px 20px;
+      font-weight: 600;
+      font-size: 14px;
+      cursor: pointer;
+    }
+
+    .btn-action:hover {
+      background-color: #d8dadf;
+    }
+
+    .btn-action.pending {
+      background-color: #e3e5e8;
+      color: #65676b;
+      cursor: default;
+    }
+
+    .btn-reject {
+      background: none;
+      border: none;
+      font-size: 18px;
+      color: #65676b;
+      cursor: pointer;
+      padding: 5px 10px;
+    }
+
+    .btn-reject:hover {
+      color: #191b1d;
+    }
+
+    .no-results {
+      color: #65676b;
+      font-size: 14px;
+      padding: 10px 0;
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Menu Lateral Esquerdo -->
+  <aside class="sidebar-mini">
+    <a href="home.html" class="sidebar-mini-item">
+      <svg viewBox="0 0 24 24"><path d="M10 20v-6h4v6h5v-8h3L12 3 2 12h3v8z"/></svg>
+      Início
+    </a>
+    <div class="sidebar-mini-item">
+      <svg viewBox="0 0 24 24"><path d="M21 3H3c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h18c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm0 16H3V5h18v14z"/></svg>
+      Momentos
+    </div>
+    <div class="sidebar-mini-item">
+      <svg viewBox="0 0 24 24"><path d="M20 2H4c-1.1 0-1.99.9-1.99 2L2 22l4-4h14c1.1 0 2-.9 2-2V4c0-1.1-.9-2-2-2z"/></svg>
+      Chat
+    </div>
+    <a href="home.html" class="sidebar-mini-item">
+      <svg viewBox="0 0 24 24"><path d="M12 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm0 2c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z"/></svg>
+      Eu
+    </a>
+    <div class="roblox-bottom-logo">R</div>
+  </aside>
+
+  <div class="main-wrapper">
+    <!-- Header Superior -->
+    <header class="top-header">
+      <button class="btn-back" onclick="window.location.href='home.html'">&larr;</button>
+      
+      <div class="search-box-container">
+        <svg class="search-icon" viewBox="0 0 24 24"><path d="M15.5 14h-.79l-.28-.27C15.41 12.59 16 11.11 16 9.5 16 5.91 13.09 3 9.5 3S3 5.91 3 9.5 5.91 16 9.5 16c1.61 0 3.09-.59 4.23-1.57l.27.28v.79l5 4.99L20.49 19l-4.99-5zm-6 0C7.01 14 5 11.99 5 9.5S7.01 5 9.5 5 14 7.01 14 9.5 11.99 14 9.5 14z"/></svg>
+        <input type="text" id="searchInput" placeholder="Pesquisar pessoas">
+      </div>
+    </header>
+
+    <!-- Abas -->
+    <div class="tabs-bar">
+      <button class="tab-btn active">Adicionar amizades</button>
+      <button class="tab-btn" onclick="window.location.href='home.html'">Amizades</button>
+    </div>
+
+    <!-- Conteúdo da Página -->
+    <div class="content-area">
+      <!-- Bloco QR Code -->
+      <div class="qr-container">
+        <div class="qr-box">
+          <svg viewBox="0 0 24 24"><path d="M2 2h8v8H2V2zm2 2v4h4V4H4zm8-2h8v8h-8V2zm2 2v4h4V4h-4zM2 14h8v8H2v-8zm2 2v4h4v-4H4zm10 2h2v2h-2v-2zm4 0h2v2h-2v-2zm-4 4h2v2h-2v-2zm4 0h2v2h-2v-2zm2-8h2v2h-2v-2zm-2 2h2v2h-2v-2zm2 2h2v2h-2v-2z"/></svg>
+        </div>
+        <span class="qr-text">Código QR</span>
+      </div>
+
+      <!-- Seção de Pedidos Recebidos -->
+      <div id="incomingSection" style="display: none; margin-bottom: 30px;">
+        <div class="section-header">
+          <div class="section-title" id="incomingTitle">Pedidos de amizade (0)</div>
+        </div>
+        <div class="requests-list" id="incomingList"></div>
+      </div>
+
+      <!-- Seção de Resultados -->
+      <div class="section-header">
+        <div class="section-title" id="sectionTitle">Pessoas que você talvez conheça</div>
+      </div>
+
+      <div class="requests-list" id="requestsList"></div>
+    </div>
+  </div>
+
+  <script>
+    document.addEventListener("DOMContentLoaded", () => {
+      const currentUser = JSON.parse(localStorage.getItem("roblox_current_user"));
+
+      if (!currentUser) {
+        window.location.href = "../auth/register.html";
+        return;
+      }
+
+      const searchInput = document.getElementById("searchInput");
+      const requestsList = document.getElementById("requestsList");
+      const sectionTitle = document.getElementById("sectionTitle");
+      const incomingSection = document.getElementById("incomingSection");
+      const incomingList = document.getElementById("incomingList");
+      const incomingTitle = document.getElementById("incomingTitle");
+
+      const userFriendsKey = `roblox_friends_${currentUser.username.toLowerCase()}`;
+      const incomingRequestsKey = `roblox_incoming_req_${currentUser.username.toLowerCase()}`;
+      const sentRequestsKey = `roblox_sent_req_${currentUser.username.toLowerCase()}`;
+
+      // RENDERIZAR PEDIDOS DE AMIZADE RECEBIDOS
+      function renderIncomingRequests() {
+        const incoming = JSON.parse(localStorage.getItem(incomingRequestsKey) || "[]");
+        incomingList.innerHTML = "";
+
+        if (incoming.length > 0) {
+          incomingSection.style.display = "block";
+          incomingTitle.textContent = `Pedidos de amizade (${incoming.length})`;
+
+          incoming.forEach(senderUsername => {
+            const row = document.createElement("div");
+            row.className = "request-row";
+            row.innerHTML = `
+              <div class="request-user-info">
+                <img src="https://tr.rbxcdn.com/30day-avatar-headshot-default/150/150/AvatarHeadshot/Png" class="user-avatar-img" alt="${senderUsername}">
+                <div class="user-details">
+                  <div class="name">${senderUsername}</div>
+                  <div class="handle">@${senderUsername.toLowerCase()}</div>
+                  <div class="subtext">Enviou uma solicitação de amizade</div>
+                </div>
+              </div>
+              <div class="request-actions">
+                <button class="btn-action" style="background-color: #00a2ff; color: #fff;" onclick="acceptFriendRequest('${senderUsername}')">Aceitar</button>
+                <button class="btn-reject" title="Recusar" onclick="rejectFriendRequest('${senderUsername}')">&#10005;</button>
+              </div>
+            `;
+            incomingList.appendChild(row);
+          });
+        } else {
+          incomingSection.style.display = "none";
+        }
+      }
+
+      function performSearch(query = "") {
+        const registeredUsers = JSON.parse(localStorage.getItem("roblox_users") || "[]");
+        const cleanQuery = query.trim().toLowerCase();
+
+        if (cleanQuery === "") {
+          sectionTitle.textContent = "Pessoas que você talvez conheça";
+          renderUserRows([]);
+          return;
+        }
+
+        sectionTitle.textContent = `Resultados para "${query}"`;
+        let results = registeredUsers.filter(u => u.username.toLowerCase().includes(cleanQuery));
+
+        results.sort((a, b) => {
+          const aExact = a.username.toLowerCase() === cleanQuery;
+          const bExact = b.username.toLowerCase() === cleanQuery;
+          if (aExact && !bExact) return -1;
+          if (!aExact && bExact) return 1;
+          return a.username.localeCompare(b.username);
+        });
+
+        renderUserRows(results);
+      }
+
+      function renderUserRows(usersArray) {
+        requestsList.innerHTML = "";
+
+        if (usersArray.length === 0) {
+          requestsList.innerHTML = `<div class="no-results">Nenhum resultado para exibir.</div>`;
+          return;
+        }
+
+        const friendsList = JSON.parse(localStorage.getItem(userFriendsKey) || "[]");
+        const sentRequests = JSON.parse(localStorage.getItem(sentRequestsKey) || "[]");
+        const incomingRequests = JSON.parse(localStorage.getItem(incomingRequestsKey) || "[]");
+
+        usersArray.forEach(user => {
+          const isMe = user.username.toLowerCase() === currentUser.username.toLowerCase();
+          const isAlreadyFriend = friendsList.some(f => f.username.toLowerCase() === user.username.toLowerCase());
+          const isPendingSent = sentRequests.includes(user.username.toLowerCase());
+          const isPendingReceived = incomingRequests.includes(user.username);
+
+          let actionButtonHtml = "";
+          if (isMe) {
+            actionButtonHtml = `<span style="font-size: 13px; color: #65676b; font-weight: 600;">Esta é sua conta</span>`;
+          } else if (isAlreadyFriend) {
+            actionButtonHtml = `<button class="btn-action pending">Amigo</button>`;
+          } else if (isPendingSent) {
+            actionButtonHtml = `<button class="btn-action pending">Pendente</button>`;
+          } else if (isPendingReceived) {
+            actionButtonHtml = `<button class="btn-action" style="background-color: #00a2ff; color: #fff;" onclick="acceptFriendRequest('${user.username}')">Aceitar</button>`;
+          } else {
+            actionButtonHtml = `<button class="btn-action" onclick="sendFriendRequest('${user.username}', this)">Adicionar</button>`;
+          }
+
+          const row = document.createElement("div");
+          row.className = "request-row";
+          row.innerHTML = `
+            <div class="request-user-info">
+              <img src="https://tr.rbxcdn.com/30day-avatar-headshot-default/150/150/AvatarHeadshot/Png" class="user-avatar-img" alt="${user.username}">
+              <div class="user-details">
+                <div class="name">${user.username}</div>
+                <div class="handle">@${user.username.toLowerCase()}</div>
+                <div class="subtext">Registrado no Roblox</div>
+              </div>
+            </div>
+            <div class="request-actions">
+              ${actionButtonHtml}
+            </div>
+          `;
+          requestsList.appendChild(row);
+        });
+      }
+
+      // ENVIAR SOLICITAÇÃO (Muda para Pendente e aguarda aceite)
+      window.sendFriendRequest = function(targetUsername, btnElement) {
+        let sentRequests = JSON.parse(localStorage.getItem(sentRequestsKey) || "[]");
+        if (!sentRequests.includes(targetUsername.toLowerCase())) {
+          sentRequests.push(targetUsername.toLowerCase());
+          localStorage.setItem(sentRequestsKey, JSON.stringify(sentRequests));
+        }
+
+        // Salva na lista de pedidos recebidos da OUTRA pessoa
+        const targetIncomingKey = `roblox_incoming_req_${targetUsername.toLowerCase()}`;
+        let targetIncoming = JSON.parse(localStorage.getItem(targetIncomingKey) || "[]");
+        if (!targetIncoming.includes(currentUser.username)) {
+          targetIncoming.push(currentUser.username);
+          localStorage.setItem(targetIncomingKey, JSON.stringify(targetIncoming));
+        }
+
+        btnElement.textContent = "Pendente";
+        btnElement.classList.add("pending");
+        btnElement.onclick = null;
+      };
+
+      // ACEITAR SOLICITAÇÃO DE AMIZADE
+      window.acceptFriendRequest = function(senderUsername) {
+        // 1. Remove dos pedidos recebidos do usuário atual
+        let incoming = JSON.parse(localStorage.getItem(incomingRequestsKey) || "[]");
+        incoming = incoming.filter(u => u.toLowerCase() !== senderUsername.toLowerCase());
+        localStorage.setItem(incomingRequestsKey, JSON.stringify(incoming));
+
+        // 2. Remove dos pedidos enviados de quem enviou
+        const senderSentKey = `roblox_sent_req_${senderUsername.toLowerCase()}`;
+        let senderSent = JSON.parse(localStorage.getItem(senderSentKey) || "[]");
+        senderSent = senderSent.filter(u => u.toLowerCase() !== currentUser.username.toLowerCase());
+        localStorage.setItem(senderSentKey, JSON.stringify(senderSent));
+
+        // 3. Adiciona na lista de amigos da conta atual
+        let friendsList = JSON.parse(localStorage.getItem(userFriendsKey) || "[]");
+        if (!friendsList.some(f => f.username.toLowerCase() === senderUsername.toLowerCase())) {
+          friendsList.push({
+            username: senderUsername,
+            avatar: "https://tr.rbxcdn.com/30day-avatar-headshot-default/150/150/AvatarHeadshot/Png"
+          });
+          localStorage.setItem(userFriendsKey, JSON.stringify(friendsList));
+        }
+
+        // 4. Adiciona na lista de amigos de quem enviou (reciprocidade)
+        const senderFriendsKey = `roblox_friends_${senderUsername.toLowerCase()}`;
+        let senderFriends = JSON.parse(localStorage.getItem(senderFriendsKey) || "[]");
+        if (!senderFriends.some(f => f.username.toLowerCase() === currentUser.username.toLowerCase())) {
+          senderFriends.push({
+            username: currentUser.username,
+            avatar: "https://tr.rbxcdn.com/30day-avatar-headshot-default/150/150/AvatarHeadshot/Png"
+          });
+          localStorage.setItem(senderFriendsKey, JSON.stringify(senderFriends));
+        }
+
+        renderIncomingRequests();
+        performSearch(searchInput.value);
+      };
+
+      // RECUSAR SOLICITAÇÃO DE AMIZADE
+      window.rejectFriendRequest = function(senderUsername) {
+        // Remove dos pedidos recebidos
+        let incoming = JSON.parse(localStorage.getItem(incomingRequestsKey) || "[]");
+        incoming = incoming.filter(u => u.toLowerCase() !== senderUsername.toLowerCase());
+        localStorage.setItem(incomingRequestsKey, JSON.stringify(incoming));
+
+        // Remove dos pedidos enviados da outra conta
+        const senderSentKey = `roblox_sent_req_${senderUsername.toLowerCase()}`;
+        let senderSent = JSON.parse(localStorage.getItem(senderSentKey) || "[]");
+        senderSent = senderSent.filter(u => u.toLowerCase() !== currentUser.username.toLowerCase());
+        localStorage.setItem(senderSentKey, JSON.stringify(senderSent));
+
+        renderIncomingRequests();
+        performSearch(searchInput.value);
+      };
+
+      // Pesquisar via Enter
+      searchInput.addEventListener("keydown", (e) => {
+        if (e.key === "Enter") {
+          performSearch(searchInput.value);
+        }
+      });
+
+      searchInput.addEventListener("input", (e) => {
+        if (e.target.value.trim() === "") {
+          performSearch("");
+        }
+      });
+
+      renderIncomingRequests();
+      performSearch("");
+    });
+  </script>
+</body>
+</html>

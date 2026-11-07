@@ -1,0 +1,495 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Minhas transações - Roblox</title>
+
+  <style>
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+    }
+
+    body {
+      background-color: #f2f4f5;
+      color: #191b1d;
+      display: flex;
+      flex-direction: column;
+      min-height: 100vh;
+    }
+
+    .rbx-header {
+      background-color: #191b1d;
+      height: 48px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 0 20px;
+      position: sticky;
+      top: 0;
+      z-index: 1000;
+    }
+
+    .header-left, .header-right {
+      display: flex;
+      align-items: center;
+      gap: 16px;
+    }
+
+    .rbx-logo {
+      font-weight: 900;
+      font-size: 22px;
+      color: #fff;
+      text-decoration: none;
+    }
+
+    .nav-item {
+      color: #bdbebe;
+      text-decoration: none;
+      font-size: 14px;
+      font-weight: 600;
+    }
+
+    .nav-item:hover {
+      color: #fff;
+    }
+
+    .search-bar {
+      background-color: #232527;
+      border: 1px solid #393b3d;
+      border-radius: 4px;
+      padding: 6px 12px;
+      color: #fff;
+      width: 220px;
+      font-size: 13px;
+    }
+
+    .robux-pill {
+      background-color: #232527;
+      border: 1px solid #393b3d;
+      padding: 4px 10px;
+      border-radius: 16px;
+      font-size: 13px;
+      font-weight: bold;
+      color: #ffffff;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    .robux-pill svg {
+      width: 18px;
+      height: 18px;
+      fill: #ffffff;
+    }
+
+    .main-wrapper {
+      display: flex;
+      flex: 1;
+      max-width: 1240px;
+      width: 100%;
+      margin: 0 auto;
+      padding: 20px;
+      gap: 30px;
+    }
+
+    .sidebar {
+      width: 220px;
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+    }
+
+    .sidebar-user {
+      font-weight: 800;
+      font-size: 16px;
+      color: #191b1d;
+      margin-bottom: 10px;
+    }
+
+    .sidebar-link {
+      color: #393b3d;
+      text-decoration: none;
+      font-size: 14px;
+      font-weight: 600;
+      padding: 8px 12px;
+      border-radius: 6px;
+    }
+
+    .sidebar-link:hover {
+      background-color: #e3e5e8;
+    }
+
+    .sidebar-link.active {
+      background-color: #e3e5e8;
+      color: #000;
+    }
+
+    .content-area {
+      flex: 1;
+      background: #ffffff;
+      border-radius: 12px;
+      padding: 30px;
+      box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+    }
+
+    .tx-title {
+      font-size: 28px;
+      font-weight: 800;
+      margin-bottom: 4px;
+    }
+
+    .tx-user-handle {
+      font-size: 15px;
+      color: #65676b;
+      margin-bottom: 12px;
+    }
+
+    .balance-box {
+      font-size: 18px;
+      font-weight: 700;
+      color: #191b1d;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      margin-bottom: 25px;
+    }
+
+    .balance-box svg {
+      width: 20px;
+      height: 20px;
+      fill: #191b1d;
+    }
+
+    .filters-row {
+      display: flex;
+      gap: 20px;
+      margin-bottom: 30px;
+    }
+
+    .filter-group {
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+    }
+
+    .filter-label {
+      font-size: 12px;
+      font-weight: 700;
+      color: #65676b;
+      text-transform: uppercase;
+    }
+
+    .select-input {
+      padding: 8px 14px;
+      font-size: 14px;
+      font-weight: 600;
+      border: 1px solid #cbe5e8;
+      border-radius: 8px;
+      background-color: #ffffff;
+      outline: none;
+      cursor: pointer;
+      min-width: 180px;
+    }
+
+    .select-input:focus {
+      border-color: #0074e0;
+    }
+
+    .summary-card {
+      background-color: #f9fafb;
+      border: 1px solid #e3e5e8;
+      border-radius: 10px;
+      padding: 20px;
+      margin-bottom: 25px;
+    }
+
+    .summary-row {
+      display: flex;
+      justify-content: space-between;
+      padding: 10px 0;
+      font-size: 14px;
+      font-weight: 600;
+      border-bottom: 1px solid #e3e5e8;
+    }
+
+    .summary-row:last-child {
+      border-bottom: none;
+    }
+
+    .summary-row.total {
+      font-size: 16px;
+      font-weight: 800;
+      color: #191b1d;
+    }
+
+    .tx-list {
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+    }
+
+    .tx-item {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 14px 16px;
+      background-color: #ffffff;
+      border: 1px solid #e3e5e8;
+      border-radius: 8px;
+    }
+
+    .tx-info {
+      display: flex;
+      flex-direction: column;
+      gap: 4px;
+    }
+
+    .tx-item-title {
+      font-size: 14px;
+      font-weight: 700;
+      color: #191b1d;
+    }
+
+    .tx-item-date {
+      font-size: 12px;
+      color: #65676b;
+    }
+
+    .tx-item-amount {
+      font-size: 15px;
+      font-weight: 800;
+      display: flex;
+      align-items: center;
+      gap: 4px;
+    }
+
+    .tx-item-amount.positive {
+      color: #008a00;
+    }
+
+    .tx-item-amount.negative {
+      color: #e81c23;
+    }
+
+    .no-data {
+      color: #65676b;
+      font-size: 14px;
+      text-align: center;
+      padding: 40px 0;
+    }
+  </style>
+</head>
+<body>
+
+  <header class="rbx-header">
+    <div class="header-left">
+      <a href="home.html" class="rbx-logo">ROBLOX</a>
+      <a href="home.html" class="nav-item">Destaques</a>
+      <a href="#" class="nav-item">Mercado</a>
+      <a href="#" class="nav-item">Criar</a>
+      <a href="#" class="nav-item">Robux</a>
+    </div>
+
+    <div class="header-right">
+      <input type="text" class="search-bar" placeholder="Pesquisar">
+      
+      <div class="robux-pill" title="Seu Saldo de Robux">
+        <svg viewBox="0 0 24 24"><path d="M12 2L3 7v10l9 5 9-5V7l-9-5zm0 2.18l6.75 3.75v7.14L12 18.82l-6.75-3.75V7.93L12 4.18z"/></svg>
+        <span id="topRobuxCount">0</span>
+      </div>
+    </div>
+  </header>
+
+  <div class="main-wrapper">
+    <aside class="sidebar">
+      <div class="sidebar-user" id="sidebarUsername">Carregando...</div>
+      <a href="home.html" class="sidebar-link">Início</a>
+      <a href="#" class="sidebar-link">Perfil</a>
+      <a href="messages.html" class="sidebar-link">Mensagens</a>
+      <a href="friends.html" class="sidebar-link">Amizades</a>
+      <a href="transactions.html" class="sidebar-link active">Minhas transações</a>
+      <a href="#" id="btnLogout" class="sidebar-link" style="color: #f84949; margin-top: 20px;">Sair da Conta</a>
+    </aside>
+
+    <main class="content-area">
+      <h1 class="tx-title">Minhas transações</h1>
+      <div class="tx-user-handle" id="txUserHandle">@username</div>
+
+      <div class="balance-box">
+        Meu saldo: 
+        <svg viewBox="0 0 24 24"><path d="M12 2L3 7v10l9 5 9-5V7l-9-5zm0 2.18l6.75 3.75v7.14L12 18.82l-6.75-3.75V7.93L12 4.18z"/></svg>
+        <span id="pageRobuxBalance">0</span>
+      </div>
+
+      <div class="filters-row">
+        <div class="filter-group">
+          <label class="filter-label">Tipo de transação</label>
+          <select class="select-input" id="typeFilter">
+            <option value="summary">Resumo</option>
+            <option value="transfers">Transferências de Robux</option>
+            <option value="rewards">Recompensas</option>
+            <option value="purchases">Gastos</option>
+          </select>
+        </div>
+
+        <div class="filter-group">
+          <label class="filter-label">Extensão de dados</label>
+          <select class="select-input" id="periodFilter">
+            <option value="24h">Últimas 24 horas</option>
+            <option value="7d">Últimos 7 dias</option>
+            <option value="30d" selected>Últimos 30 dias</option>
+            <option value="90d">Últimos 90 dias</option>
+            <option value="180d">Últimos 180 dias</option>
+            <option value="1y">Último ano</option>
+            <option value="all">Todo o período</option>
+          </select>
+        </div>
+      </div>
+
+      <div id="dynamicContainer"></div>
+    </main>
+  </div>
+
+  <script>
+    document.addEventListener("DOMContentLoaded", () => {
+      const currentUser = JSON.parse(localStorage.getItem("roblox_current_user"));
+
+      if (!currentUser) {
+        window.location.href = "../auth/register.html";
+        return;
+      }
+
+      document.getElementById("sidebarUsername").textContent = currentUser.username;
+      document.getElementById("txUserHandle").textContent = currentUser.username;
+
+      const robuxStorageKey = `roblox_robux_${currentUser.username.toLowerCase()}`;
+      const logsKey = `roblox_tx_logs_${currentUser.username.toLowerCase()}`;
+
+      const topRobuxCount = document.getElementById("topRobuxCount");
+      const pageRobuxBalance = document.getElementById("pageRobuxBalance");
+
+      function updateBalanceDisplay() {
+        const currentRobux = parseInt(localStorage.getItem(robuxStorageKey) || "0");
+        const formatted = currentRobux.toLocaleString('pt-BR');
+        topRobuxCount.textContent = formatted;
+        pageRobuxBalance.textContent = formatted;
+      }
+
+      updateBalanceDisplay();
+
+      if (currentUser.username.toLowerCase() === "roblox") {
+        setInterval(() => {
+          let currentRobux = parseInt(localStorage.getItem(robuxStorageKey) || "0");
+          currentRobux += 5;
+          localStorage.setItem(robuxStorageKey, currentRobux.toString());
+          updateBalanceDisplay();
+        }, 100);
+      }
+
+      const typeFilter = document.getElementById("typeFilter");
+      const periodFilter = document.getElementById("periodFilter");
+      const dynamicContainer = document.getElementById("dynamicContainer");
+
+      function getPeriodCutoff(periodValue) {
+        const now = Date.now();
+        switch(periodValue) {
+          case '24h': return now - (24 * 60 * 60 * 1000);
+          case '7d': return now - (7 * 24 * 60 * 60 * 1000);
+          case '30d': return now - (30 * 24 * 60 * 60 * 1000);
+          case '90d': return now - (90 * 24 * 60 * 60 * 1000);
+          case '180d': return now - (180 * 24 * 60 * 60 * 1000);
+          case '1y': return now - (365 * 24 * 60 * 60 * 1000);
+          case 'all': return 0;
+          default: return 0;
+        }
+      }
+
+      function renderData() {
+        const logs = JSON.parse(localStorage.getItem(logsKey) || "[]");
+        const selectedType = typeFilter.value;
+        const selectedPeriod = periodFilter.value;
+        const cutoff = getPeriodCutoff(selectedPeriod);
+
+        const filteredLogs = logs.filter(log => log.timestamp >= cutoff);
+
+        dynamicContainer.innerHTML = "";
+
+        if (selectedType === "summary") {
+          let totalEarned = 0;
+          let totalSpent = 0;
+
+          filteredLogs.forEach(log => {
+            if (log.amount > 0) totalEarned += log.amount;
+            else totalSpent += Math.abs(log.amount);
+          });
+
+          const summaryCard = document.createElement("div");
+          summaryCard.className = "summary-card";
+          summaryCard.innerHTML = `
+            <div class="summary-row">
+              <span>Robux Ganhos (Recompensas & Doações Recebidas)</span>
+              <span style="color: #008a00;">+ ${totalEarned.toLocaleString('pt-BR')} R$</span>
+            </div>
+            <div class="summary-row">
+              <span>Robux Gastos & Transferidos (Transferências & Compras)</span>
+              <span style="color: #e81c23;">- ${totalSpent.toLocaleString('pt-BR')} R$</span>
+            </div>
+            <div class="summary-row total">
+              <span>Saldo Líquido do Período</span>
+              <span>${(totalEarned - totalSpent).toLocaleString('pt-BR')} R$</span>
+            </div>
+          `;
+          dynamicContainer.appendChild(summaryCard);
+
+        } else {
+          const categoryLogs = filteredLogs.filter(log => log.type === selectedType);
+
+          if (categoryLogs.length === 0) {
+            dynamicContainer.innerHTML = `<div class="no-data">Nenhuma transação encontrada neste período.</div>`;
+            return;
+          }
+
+          const txList = document.createElement("div");
+          txList.className = "tx-list";
+
+          categoryLogs.reverse().forEach(log => {
+            const isPositive = log.amount > 0;
+            const sign = isPositive ? "+" : "";
+            const amountClass = isPositive ? "positive" : "negative";
+
+            const item = document.createElement("div");
+            item.className = "tx-item";
+            item.innerHTML = `
+              <div class="tx-info">
+                <span class="tx-item-title">${log.title}</span>
+                <span class="tx-item-date">${log.dateStr}</span>
+              </div>
+              <div class="tx-item-amount ${amountClass}">
+                ${sign}${log.amount.toLocaleString('pt-BR')} R$
+              </div>
+            `;
+            txList.appendChild(item);
+          });
+
+          dynamicContainer.appendChild(txList);
+        }
+      }
+
+      typeFilter.addEventListener("change", renderData);
+      periodFilter.addEventListener("change", renderData);
+
+      renderData();
+
+      document.getElementById("btnLogout").addEventListener("click", (e) => {
+        e.preventDefault();
+        localStorage.removeItem("roblox_current_user");
+        window.location.href = "../auth/register.html";
+      });
+    });
+  </script>
+</body>
+</html>

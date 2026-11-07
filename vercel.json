@@ -1,0 +1,12 @@
+{
+  "cleanUrls": true,
+  "rewrites": [
+    { "source": "/", "destination": "/views/auth/register.html" },
+    { "source": "/register", "destination": "/views/auth/register.html" },
+    { "source": "/login", "destination": "/views/auth/login.html" },
+    { "source": "/home", "destination": "/views/dashboard/home.html" },
+    { "source": "/messages", "destination": "/views/dashboard/messages.html" },
+    { "source": "/friends", "destination": "/views/dashboard/friends.html" },
+    { "source": "/transactions", "destination": "/views/dashboard/transactions.html" }
+  ]
+}

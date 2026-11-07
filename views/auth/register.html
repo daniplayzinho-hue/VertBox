@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Cadastrar-se - Roblox</title>
+  <link rel="stylesheet" href="../../css/pages/register.css">
+</head>
+<body>
+  <div class="register-card">
+    <h2>CRIE SUA CONTA</h2>
+
+    <form id="registerForm">
+      <!-- Data de Nascimento -->
+      <label>Data de Nascimento</label>
+      <div class="birth-container">
+        <select id="birthDay" required></select>
+        <select id="birthMonth" required>
+          <option value="1">Janeiro</option>
+          <option value="2">Fevereiro</option>
+          <option value="3">Março</option>
+          <option value="4">Abril</option>
+          <option value="5">Maio</option>
+          <option value="6">Junho</option>
+          <option value="7">Julho</option>
+          <option value="8">Agosto</option>
+          <option value="9">Setembro</option>
+          <option value="10">Outubro</option>
+          <option value="11">Novembro</option>
+          <option value="12">Dezembro</option>
+        </select>
+        <select id="birthYear" required></select>
+      </div>
+
+      <!-- Nome de Usuário -->
+      <label for="username">Nome de usuário</label>
+      <input type="text" id="username" placeholder="Digite seu nome de usuário" required>
+      <span id="usernameError" class="error-msg"></span>
+
+      <!-- Senha -->
+      <label for="password">Senha</label>
+      <input type="password" id="password" placeholder="Mínimo 8 caracteres" required>
+
+      <button type="submit" id="btnRegister">Cadastrar-se</button>
+    </form>
+
+    <!-- Link para a tela de Login -->
+    <p style="text-align: center; margin-top: 15px; font-size: 13px; color: #bdbebe;">
+      Já tem uma conta? <a href="login.html" style="color: #00a2ff; text-decoration: none; font-weight: bold;">Entrar</a>
+    </p>
+  </div>
+
+  <script src="../../js/auth.js"></script>
+</body>
+</html>
