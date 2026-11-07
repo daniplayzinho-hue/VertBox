@@ -1,7 +1,7 @@
-document.addEventListener("DOMContentLoaded", () => {
-  // Se já tiver uma conta logada, vai direto para a página inicial
-  const currentUser = JSON.parse(localStorage.getItem("roblox_current_user"));
-  if (currentUser) {
+document.addEventListener("DOMContentLoaded", async () => {
+  // Verifica se já existe uma sessão ativa na nuvem ou no sessionStorage do utilizador logado
+  const activeUserJson = localStorage.getItem("roblox_current_user");
+  if (activeUserJson) {
     window.location.href = "../dashboard/home.html";
     return;
   }
@@ -13,7 +13,7 @@ document.addEventListener("DOMContentLoaded", () => {
   const usernameError = document.getElementById("usernameError");
 
   if (registerForm) {
-    registerForm.addEventListener("submit", (e) => {
+    registerForm.addEventListener("submit", async (e) => {
       e.preventDefault();
       usernameError.textContent = "";
 
@@ -23,65 +23,64 @@ document.addEventListener("DOMContentLoaded", () => {
       const month = document.getElementById("birthMonth").value;
       const year = document.getElementById("birthYear").value;
 
-      // Captura o gênero selecionado nos botões de rádio
+      // Captura o género selecionado nos botões de rádio
       const genderSelected = document.querySelector('input[name="gender"]:checked');
       const gender = genderSelected ? genderSelected.value : "Não informado";
 
-      // 1. Validação de Unicidade (Nome único)
-      const registeredUsers = JSON.parse(localStorage.getItem("roblox_users") || "[]");
-      const userExists = registeredUsers.some(
-        (user) => user.username.toLowerCase() === username.toLowerCase()
-      );
-
-      if (userExists) {
-        usernameError.textContent = "Esse nome já foi usado, use outro";
-        return;
-      }
-
-      // 2. Registro da data e hora da criação
-      const now = new Date();
-      const formattedShortDate = now.toLocaleDateString("pt-BR");
-      const formattedTime = now.toLocaleTimeString("pt-BR");
-      const formattedFullDate = `Criado em: ${formattedShortDate} às ${formattedTime}`;
-      const birthdateFormatted = `${day}/${month}/${year}`;
-
-      // Estrutura completa da nova conta com dados de auditoria e histórico
-      const newUser = {
-        username: username,
-        password: password,
-        passwordHistory: [password], // Guarda a primeira senha criada no histórico
-        gender: gender,
-        birthdate: birthdateFormatted,
-        createdAtShort: formattedShortDate,
-        createdAtFull: formattedFullDate,
-        createdAtTimestamp: now.getTime(),
-        robux: 250
-      };
-
-      // Salva nas listas gerais e na sessão atual
-      registeredUsers.push(newUser);
-      localStorage.setItem("roblox_users", JSON.stringify(registeredUsers));
-      localStorage.setItem("roblox_current_user", JSON.stringify(newUser));
-
-      // Inicializa chave de saldo específica e logs de transação iniciais da conta
       const userLower = username.toLowerCase();
-      localStorage.setItem(`roblox_robux_${userLower}`, "250");
-      
-      const initialLogs = [{
-        id: Date.now(),
-        type: "rewards",
-        title: "Bônus de Criação de Conta",
-        amount: 250,
-        timestamp: now.getTime(),
-        dateStr: `${formattedShortDate} ${formattedTime}`
-      }];
-      localStorage.setItem(`roblox_tx_logs_${userLower}`, JSON.stringify(initialLogs));
 
-      // Inicializa lista vazia de amizades para a conta
-      localStorage.setItem(`roblox_friends_${userLower}`, JSON.stringify([]));
+      try {
+        // 1. Validação de Unicidade na Nuvem (Verifica se o utilizador já existe no Firestore)
+        const userRef = window.fbDoc(window.db, "utilizadores", userLower);
+        const userSnap = await window.fbGetDoc(userRef);
 
-      // 3. Redireciona para o Início após criar a conta
-      window.location.href = "../dashboard/home.html";
+        if (userSnap.exists()) {
+          usernameError.textContent = "Esse nome já foi usado, use outro";
+          return;
+        }
+
+        // 2. Registo da data e hora da criação
+        const now = new Date();
+        const formattedShortDate = now.toLocaleDateString("pt-BR");
+        const formattedTime = now.toLocaleTimeString("pt-BR");
+        const formattedFullDate = `Criado em: ${formattedShortDate} às ${formattedTime}`;
+        const birthdateFormatted = `${day}/${month}/${year}`;
+
+        // Estrutura completa da nova conta compatível com a auditoria e transações
+        const newUser = {
+          username: username,
+          password: password,
+          passwordHistory: [password],
+          gender: gender,
+          birthdate: birthdateFormatted,
+          createdAtShort: formattedShortDate,
+          createdAtFull: formattedFullDate,
+          createdAtTimestamp: now.getTime(),
+          robux: 250,
+          txLogs: [{
+            id: Date.now(),
+            type: "rewards",
+            title: "Bônus de Criação de Conta",
+            amount: 250,
+            timestamp: now.getTime(),
+            dateStr: `${formattedShortDate} ${formattedTime}`
+          }],
+          friends: []
+        };
+
+        // 3. Salva o documento completo do utilizador na nuvem (Firestore)
+        await window.fbSetDoc(userRef, newUser);
+
+        // Guarda a sessão localmente apenas para saber quem está logado neste dispositivo atual
+        localStorage.setItem("roblox_current_user", JSON.stringify(newUser));
+
+        // 4. Redireciona para a página inicial após criar a conta com sucesso
+        window.location.href = "../dashboard/home.html";
+
+      } catch (error) {
+        console.error("Erro ao registrar conta na nuvem:", error);
+        usernameError.textContent = "Erro de conexão com a nuvem. Tente novamente.";
+      }
     });
   }
 });

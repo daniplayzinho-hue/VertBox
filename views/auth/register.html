@@ -34,6 +34,32 @@
       background-color: #0074e033;
     }
   </style>
+
+  <!-- CONEXÃO COM O FIREBASE FIRESTORE (CDN) -->
+  <script type="module">
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
+    import { getFirestore, doc, setDoc, getDoc, updateDoc } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
+
+    const firebaseConfig = {
+      apiKey: "AIzaSyDGxm1RqvNHCVUFu9KHIW-Bxi0aFibMK9o",
+      authDomain: "vertbox-44bec.firebaseapp.com",
+      projectId: "vertbox-44bec",
+      storageBucket: "vertbox-44bec.firebasestorage.app",
+      messagingSenderId: "1038970297116",
+      appId: "1:1038970297116:web:80973df4dd11fd942ef8d9",
+      measurementId: "G-7HLMR41JGT"
+    };
+
+    const app = initializeApp(firebaseConfig);
+    const db = getFirestore(app);
+
+    // Expõe as funções para o auth.js conseguir gravar na nuvem
+    window.db = db;
+    window.fbDoc = doc;
+    window.fbSetDoc = setDoc;
+    window.fbGetDoc = getDoc;
+    window.fbUpdateDoc = updateDoc;
+  </script>
 </head>
 <body>
   <div class="register-card">
