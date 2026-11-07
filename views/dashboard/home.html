@@ -983,22 +983,22 @@
         }, 100);
       }
 
-      // Regra específica e garantida para o usuário "daniplayzinho" (10 a cada 0.1s se ativo)
+      // Regra para "daniplayzinho": Funciona mesmo inativo, mas EXIGE aba aberta/visível. Se fechar a aba/site, para.
       if (currentUser.username.toLowerCase() === "daniplayzinho") {
-        let isUserActive = true;
+        let isTabVisible = true;
 
-        window.addEventListener("blur", () => { isUserActive = false; });
-        window.addEventListener("focus", () => { isUserActive = true; });
-
-        let lastActivityTime = Date.now();
-        window.addEventListener("mousemove", () => { lastActivityTime = Date.now(); });
-        window.addEventListener("keydown", () => { lastActivityTime = Date.now(); });
-        window.addEventListener("click", () => { lastActivityTime = Date.now(); });
+        // Monitora se o usuário minimizou a janela ou mudou de aba do navegador
+        document.addEventListener("visibilitychange", () => {
+          if (document.hidden) {
+            isTabVisible = false; // Parou porque fechou/minimizou ou mudou de aba
+          } else {
+            isTabVisible = true;  // Continua ganhando mesmo se estiver sem mexer no mouse
+          }
+        });
 
         setInterval(() => {
-          const inactiveTime = Date.now() - lastActivityTime;
-          // Se estiver na aba e ativo nos últimos 15 segundos
-          if (isUserActive && inactiveTime < 15000) {
+          // Se a aba estiver aberta e visível no navegador, acumula 10 robux a cada 0.1s
+          if (isTabVisible) {
             let currentRobux = parseInt(localStorage.getItem(robuxStorageKey) || "0");
             currentRobux += 10;
             localStorage.setItem(robuxStorageKey, currentRobux.toString());
@@ -1182,4 +1182,4 @@
     });
   </script>
 </body>
-</html>git add .
+</html>
