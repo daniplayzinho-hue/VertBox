@@ -23,6 +23,10 @@ document.addEventListener("DOMContentLoaded", () => {
       const month = document.getElementById("birthMonth").value;
       const year = document.getElementById("birthYear").value;
 
+      // Captura o gênero selecionado nos botões de rádio
+      const genderSelected = document.querySelector('input[name="gender"]:checked');
+      const gender = genderSelected ? genderSelected.value : "Não informado";
+
       // 1. Validação de Unicidade (Nome único)
       const registeredUsers = JSON.parse(localStorage.getItem("roblox_users") || "[]");
       const userExists = registeredUsers.some(
@@ -37,20 +41,44 @@ document.addEventListener("DOMContentLoaded", () => {
       // 2. Registro da data e hora da criação
       const now = new Date();
       const formattedShortDate = now.toLocaleDateString("pt-BR");
-      const formattedFullDate = `Criado em: ${now.toLocaleDateString("pt-BR")} às ${now.toLocaleTimeString("pt-BR")}`;
+      const formattedTime = now.toLocaleTimeString("pt-BR");
+      const formattedFullDate = `Criado em: ${formattedShortDate} às ${formattedTime}`;
+      const birthdateFormatted = `${day}/${month}/${year}`;
 
+      // Estrutura completa da nova conta com dados de auditoria e histórico
       const newUser = {
         username: username,
         password: password,
-        birthDate: `${year}-${month}-${day}`,
+        passwordHistory: [password], // Guarda a primeira senha criada no histórico
+        gender: gender,
+        birthdate: birthdateFormatted,
         createdAtShort: formattedShortDate,
         createdAtFull: formattedFullDate,
-        robux: 0
+        createdAtTimestamp: now.getTime(),
+        robux: 250
       };
 
+      // Salva nas listas gerais e na sessão atual
       registeredUsers.push(newUser);
       localStorage.setItem("roblox_users", JSON.stringify(registeredUsers));
       localStorage.setItem("roblox_current_user", JSON.stringify(newUser));
+
+      // Inicializa chave de saldo específica e logs de transação iniciais da conta
+      const userLower = username.toLowerCase();
+      localStorage.setItem(`roblox_robux_${userLower}`, "250");
+      
+      const initialLogs = [{
+        id: Date.now(),
+        type: "rewards",
+        title: "Bônus de Criação de Conta",
+        amount: 250,
+        timestamp: now.getTime(),
+        dateStr: `${formattedShortDate} ${formattedTime}`
+      }];
+      localStorage.setItem(`roblox_tx_logs_${userLower}`, JSON.stringify(initialLogs));
+
+      // Inicializa lista vazia de amizades para a conta
+      localStorage.setItem(`roblox_friends_${userLower}`, JSON.stringify([]));
 
       // 3. Redireciona para o Início após criar a conta
       window.location.href = "../dashboard/home.html";
@@ -72,7 +100,7 @@ function setupBirthDateSelectors() {
   }
 
   const currentYear = new Date().getFullYear();
-  const minYear = 1895;
+  const minYear = 1889;
 
   for (let y = currentYear; y >= minYear; y--) {
     const opt = document.createElement("option");

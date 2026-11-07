@@ -5,6 +5,35 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Cadastrar-se - Roblox</title>
   <link rel="stylesheet" href="../../css/pages/register.css">
+  <style>
+    /* Estilo moderno para a seleção de gênero */
+    .gender-container {
+      display: flex;
+      gap: 12px;
+      margin-bottom: 16px;
+    }
+    .gender-option {
+      flex: 1;
+      background-color: #232527;
+      border: 1px solid #393b3d;
+      border-radius: 8px;
+      padding: 10px;
+      text-align: center;
+      color: #fff;
+      font-size: 14px;
+      font-weight: 600;
+      cursor: pointer;
+      user-select: none;
+      transition: all 0.2s;
+    }
+    .gender-option input {
+      display: none;
+    }
+    .gender-option.selected {
+      border-color: #0074e0;
+      background-color: #0074e033;
+    }
+  </style>
 </head>
 <body>
   <div class="register-card">
@@ -41,6 +70,19 @@
       <label for="password">Senha</label>
       <input type="password" id="password" placeholder="Mínimo 8 caracteres" required>
 
+      <!-- Gênero -->
+      <label>Gênero (Opcional)</label>
+      <div class="gender-container">
+        <label class="gender-option" id="lblMale">
+          Masculino
+          <input type="radio" name="gender" value="Masculino">
+        </label>
+        <label class="gender-option" id="lblFemale">
+          Feminino
+          <input type="radio" name="gender" value="Feminino">
+        </label>
+      </div>
+
       <button type="submit" id="btnRegister">Cadastrar-se</button>
     </form>
 
@@ -50,6 +92,29 @@
     </p>
   </div>
 
+  <script>
+    // Script visual para alternar o destaque dos botões de gênero
+    const maleOpt = document.getElementById("lblMale");
+    const femaleOpt = document.getElementById("lblFemale");
+    const radios = document.getElementsByName("gender");
+
+    function updateGenderUI() {
+      radios.forEach(r => {
+        if (r.checked) {
+          if (r.value === "Masculino") {
+            maleOpt.classList.add("selected");
+            femaleOpt.classList.remove("selected");
+          } else {
+            femaleOpt.classList.add("selected");
+            maleOpt.classList.remove("selected");
+          }
+        }
+      });
+    }
+
+    maleOpt.addEventListener("click", () => { radios[0].checked = true; updateGenderUI(); });
+    femaleOpt.addEventListener("click", () => { radios[1].checked = true; updateGenderUI(); });
+  </script>
   <script src="../../js/auth.js"></script>
 </body>
 </html>

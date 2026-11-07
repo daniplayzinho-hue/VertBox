@@ -1,0 +1,376 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Painel de Auditoria - Roblox</title>
+  <style>
+    :root {
+      --bg-color: #0f1115;
+      --card-bg: #181b20;
+      --border-color: #2a2e37;
+      --accent-blue: #0074e0;
+      --text-main: #ffffff;
+      --text-secondary: #9ba1a6;
+      --danger-red: #e81c23;
+      --success-green: #2ecc71;
+    }
+
+    body {
+      background-color: var(--bg-color);
+      color: var(--text-main);
+      font-family: 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+      margin: 0;
+      padding: 30px;
+      display: flex;
+      justify-content: center;
+    }
+
+    .admin-container {
+      width: 100%;
+      max-width: 900px;
+      display: flex;
+      flex-direction: column;
+      gap: 24px;
+    }
+
+    .admin-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      background: var(--card-bg);
+      border: 1px solid var(--border-color);
+      padding: 20px 24px;
+      border-radius: 12px;
+    }
+
+    .admin-title {
+      font-size: 20px;
+      font-weight: 800;
+      letter-spacing: -0.5px;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .back-btn {
+      background-color: #232730;
+      border: 1px solid var(--border-color);
+      color: var(--text-main);
+      padding: 8px 16px;
+      border-radius: 8px;
+      font-weight: 600;
+      cursor: pointer;
+      text-decoration: none;
+      font-size: 13px;
+    }
+
+    .back-btn:hover {
+      background-color: #2f3542;
+    }
+
+    .card-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 20px;
+    }
+
+    .info-card {
+      background: var(--card-bg);
+      border: 1px solid var(--border-color);
+      border-radius: 12px;
+      padding: 24px;
+      display: flex;
+      flex-direction: column;
+      gap: 16px;
+    }
+
+    .card-subtitle {
+      font-size: 14px;
+      font-weight: 700;
+      color: var(--text-secondary);
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      border-bottom: 1px solid var(--border-color);
+      padding-bottom: 8px;
+    }
+
+    .info-row {
+      display: flex;
+      justify-content: space-between;
+      font-size: 14px;
+    }
+
+    .info-label {
+      color: var(--text-secondary);
+      font-weight: 500;
+    }
+
+    .info-value {
+      font-weight: 700;
+      color: var(--text-main);
+    }
+
+    .password-badge {
+      background: #232730;
+      padding: 4px 8px;
+      border-radius: 4px;
+      font-family: monospace;
+      color: #f1c40f;
+    }
+
+    .full-width-card {
+      grid-column: span 2;
+    }
+
+    .tx-table {
+      width: 100%;
+      border-collapse: collapse;
+      margin-top: 5px;
+    }
+
+    .tx-table th, .tx-table td {
+      padding: 10px 12px;
+      text-align: left;
+      font-size: 13px;
+      border-bottom: 1px solid var(--border-color);
+    }
+
+    .tx-table th {
+      color: var(--text-secondary);
+      font-weight: 600;
+    }
+
+    .action-row {
+      display: flex;
+      gap: 15px;
+      margin-top: 10px;
+    }
+
+    .btn-action {
+      flex: 1;
+      padding: 12px;
+      border-radius: 8px;
+      font-weight: 700;
+      font-size: 14px;
+      cursor: pointer;
+      border: none;
+    }
+
+    .btn-ban {
+      background-color: rgba(232, 28, 35, 0.15);
+      color: var(--danger-red);
+      border: 1px solid rgba(232, 28, 35, 0.3);
+    }
+
+    .btn-ban:hover {
+      background-color: rgba(232, 28, 35, 0.25);
+    }
+
+    .btn-unban {
+      background-color: rgba(46, 204, 113, 0.15);
+      color: var(--success-green);
+      border: 1px solid rgba(46, 204, 113, 0.3);
+      display: none; /* Só aparece se estiver banido */
+    }
+
+    .btn-unban:hover {
+      background-color: rgba(46, 204, 113, 0.25);
+    }
+
+    .access-denied {
+      text-align: center;
+      padding: 60px 20px;
+      background: var(--card-bg);
+      border-radius: 12px;
+      border: 1px solid var(--border-color);
+    }
+  </style>
+</head>
+<body>
+
+  <div class="admin-container" id="mainContainer" style="display: none;">
+    <div class="admin-header">
+      <div class="admin-title">
+        <span>🛡️ Painel de Inspeção de Conta</span>
+      </div>
+      <a href="home.html" class="back-btn">&larr; Voltar para Início</a>
+    </div>
+
+    <div class="card-grid">
+      <!-- Informações Básicas -->
+      <div class="info-card">
+        <div class="card-subtitle">Credenciais & Identidade</div>
+        <div class="info-row">
+          <span class="info-label">Nickname:</span>
+          <span class="info-value" id="detUsername">-</span>
+        </div>
+        <div class="info-row">
+          <span class="info-label">Senha Atual:</span>
+          <span class="info-value"><code class="password-badge" id="detPassword">-</code></span>
+        </div>
+        <div class="info-row">
+          <span class="info-label">Gênero:</span>
+          <span class="info-value" id="detGender">-</span>
+        </div>
+        <div class="info-row">
+          <span class="info-label">Data de Nascimento:</span>
+          <span class="info-value" id="detBirth">-</span>
+        </div>
+      </div>
+
+      <!-- Estatísticas em Tempo Real -->
+      <div class="info-card">
+        <div class="card-subtitle">Métricas & Atividade</div>
+        <div class="info-row">
+          <span class="info-label">Saldo de Robux (Tempo Real):</span>
+          <span class="info-value" style="color: #2ecc71;" id="detRobux">0 R$</span>
+        </div>
+        <div class="info-row">
+          <span class="info-label">Total de Amizades:</span>
+          <span class="info-value" id="detFriends">0</span>
+        </div>
+        <div class="info-row">
+          <span class="info-label">Data de Criação:</span>
+          <span class="info-value" id="detCreated">-</span>
+        </div>
+        <div class="info-row">
+          <span class="info-label">Status da Conta:</span>
+          <span class="info-value" style="color: #2ecc71;" id="detStatus">Ativa</span>
+        </div>
+      </div>
+
+      <!-- Histórico de Senhas -->
+      <div class="info-card">
+        <div class="card-subtitle">Histórico de Senhas</div>
+        <div id="detPasswordHistory" style="display: flex; flex-direction: column; gap: 8px; font-size: 13px;">
+          <!-- Preenchido via JS -->
+        </div>
+      </div>
+
+      <!-- Gestão Rápida -->
+      <div class="info-card">
+        <div class="card-subtitle">Controle Administrativo</div>
+        <p style="font-size: 13px; color: var(--text-secondary); margin: 0;">Ferramentas de moderação restritas ao administrador autorizado.</p>
+        <div class="action-row">
+          <button class="btn-action btn-ban" id="btnBanAction">Banir Conta</button>
+          <button class="btn-action btn-unban" id="btnUnbanAction">Desbanir Conta</button>
+        </div>
+      </div>
+
+      <!-- Histórico de Transações -->
+      <div class="info-card full-width-card">
+        <div class="card-subtitle">Histórico de Transações de Robux</div>
+        <div style="overflow-x: auto;">
+          <table class="tx-table">
+            <thead>
+              <tr>
+                <th>Data e Hora</th>
+                <th>Tipo</th>
+                <th>Descrição</th>
+                <th>Valor</th>
+              </tr>
+            </thead>
+            <tbody id="detTxTableBody">
+              <!-- Preenchido via JS -->
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="admin-container" id="deniedContainer" style="display: none;">
+    <div class="access-denied">
+      <h2 style="color: #e81c23; margin-top: 0;">Acesso Negado</h2>
+      <p style="color: var(--text-secondary);">Esta área restrita é exclusiva e permanentemente protegida para a conta <strong>Daniplayzinho</strong>.</p>
+      <a href="home.html" class="back-btn" style="display: inline-block; margin-top: 15px;">Retornar à Página Inicial</a>
+    </div>
+  </div>
+
+  <script>
+    document.addEventListener("DOMContentLoaded", () => {
+      const currentUser = JSON.parse(localStorage.getItem("roblox_current_user"));
+
+      // VALIDAÇÃO DE SEGURANÇA: Apenas "Daniplayzinho" pode ver esta página
+      if (!currentUser || currentUser.username.toLowerCase() !== "daniplayzinho") {
+        document.getElementById("deniedContainer").style.display = "block";
+        return;
+      }
+
+      document.getElementById("mainContainer").style.display = "flex";
+
+      // Carregar dados armazenados do utilizador alvo (ou da própria sessão)
+      const targetUserKey = `roblox_user_${currentUser.username.toLowerCase()}`;
+      const userFullData = JSON.parse(localStorage.getItem(targetUserKey) || JSON.stringify(currentUser));
+      
+      // Preencher dados básicos
+      document.getElementById("detUsername").textContent = currentUser.username;
+      document.getElementById("detPassword").textContent = userFullData.password || "********";
+      document.getElementById("detGender").textContent = userFullData.gender || "Não informado";
+      document.getElementById("detBirth").textContent = userFullData.birthdate || "Não informada";
+
+      // Métricas em tempo real
+      const robuxKey = `roblox_robux_${currentUser.username.toLowerCase()}`;
+      const currentRobux = parseInt(localStorage.getItem(robuxKey) || "250");
+      document.getElementById("detRobux").textContent = `${currentRobux.toLocaleString('pt-BR')} R$`;
+
+      const friendsKey = `roblox_friends_${currentUser.username.toLowerCase()}`;
+      const friendsList = JSON.parse(localStorage.getItem(friendsKey) || "[]");
+      document.getElementById("detFriends").textContent = friendsList.length;
+
+      const createdDate = userFullData.createdAt ? new Date(userFullData.createdAt).toLocaleString('pt-BR') : "Sessão Atual";
+      document.getElementById("detCreated").textContent = createdDate;
+
+      // Histórico de senhas
+      const passHistoryDiv = document.getElementById("detPasswordHistory");
+      const historyArr = userFullData.passwordHistory || [userFullData.password || "Senha padrão"];
+      passHistoryDiv.innerHTML = historyArr.map((p, index) => `
+        <div style="display: flex; justify-content: space-between; background: #232730; padding: 6px 10px; border-radius: 6px;">
+          <span>${index === 0 ? 'Primeira Senha:' : 'Senha ' + (index + 1) + ':'}</span>
+          <code style="color: #f1c40f;">${p}</code>
+        </div>
+      `).join('');
+
+      // Tabela de transações
+      const logsKey = `roblox_tx_logs_${currentUser.username.toLowerCase()}`;
+      const txLogs = JSON.parse(localStorage.getItem(logsKey) || "[]");
+      const txBody = document.getElementById("detTxTableBody");
+      
+      if (txLogs.length === 0) {
+        txBody.innerHTML = `<tr><td colspan="4" style="text-align: center; color: var(--text-secondary);">Nenhuma transação registada.</td></tr>`;
+      } else {
+        txBody.innerHTML = txLogs.map(tx => `
+          <tr>
+            <td>${tx.dateStr || 'Recentemente'}</td>
+            <td><span style="padding: 2px 6px; border-radius: 4px; font-size: 11px; background: #232730;">${tx.type}</span></td>
+            <td>${tx.title}</td>
+            <td style="color: ${tx.amount > 0 ? '#2ecc71' : '#e81c23'}; font-weight: bold;">
+              ${tx.amount > 0 ? '+' : ''}${tx.amount} R$
+            </td>
+          </tr>
+        `).join('');
+      }
+
+      // Botões de Ban / Desbanir (Simulação de interface)
+      const btnBan = document.getElementById("btnBanAction");
+      const btnUnban = document.getElementById("btnUnbanAction");
+      const statusText = document.getElementById("detStatus");
+
+      btnBan.addEventListener("click", () => {
+        statusText.textContent = "Banido";
+        statusText.style.color = "var(--danger-red)";
+        btnBan.style.display = "none";
+        btnUnban.style.display = "block";
+      });
+
+      btnUnban.addEventListener("click", () => {
+        statusText.textContent = "Ativa";
+        statusText.style.color = "var(--success-green)";
+        btnUnban.style.display = "none";
+        btnBan.style.display = "block";
+      });
+    });
+  </script>
+</body>
+</html>
